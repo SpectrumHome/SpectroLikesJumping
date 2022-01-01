@@ -30,7 +30,7 @@ public class CreationListener implements Listener {
 	public static HashMap<Player, ModuleData> creationMode = new HashMap<Player, ModuleData>();
 
 	public static boolean isCheckpoint(Location loc) {
-		return loc.getBlock().getType()==Material.GOLD_PLATE && loc.getBlock().getLocation().subtract(0, 1, 0).getBlock().getType()==Material.GOLD_BLOCK;
+		return loc.getBlock().getType()==Material.WOOD_PLATE && loc.getBlock().getLocation().subtract(0, 1, 0).getBlock().getType()==Material.GOLD_BLOCK;
 	}
 
 	@EventHandler

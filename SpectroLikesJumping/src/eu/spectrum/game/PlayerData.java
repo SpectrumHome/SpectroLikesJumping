@@ -15,7 +15,7 @@ public class PlayerData {
 
 	public PlayerData(Location start) {
 		currentModule = -1;
-		setStart(start);
+		this.start = start;
 	}
 	
 	public void setStart(Location start) {

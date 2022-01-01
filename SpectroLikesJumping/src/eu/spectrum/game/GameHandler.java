@@ -96,26 +96,25 @@ public class GameHandler {
 		if (gameState == GameState.LOBBY) {
 			if (startCountdown)
 				stopGameTimer(caller);
-			if(Main.getInstance().loadingWorld) {
-				caller.sendMessage(Main.PREFIX+ Main.handler.format("game.world.loading"));
+			if (Main.getInstance().loadingWorld) {
+				caller.sendMessage(Main.PREFIX + Main.handler.format("game.world.loading"));
 				return;
 			}
 			List<ModuleData> modules = ModuleManager.loadModules();
-			if(modules.size()<=0) {
+			if (modules.size() <= 0) {
 				caller.sendMessage(Main.PREFIX + "§cEs existieren keine Module.");
 				return;
 			}
-				gameState = GameState.INGAME;
+			gameState = GameState.INGAME;
 			gameModules.clear();
 			gameModules = modules;
-			
+
 			Vector totalSize = ModuleManager.getSize(gameModules);
 
 			int count = 0;
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				Location loc = new Location(Main.getInstance().getWorld(), 0d, 100d, (totalSize.getZ() + 20) * count);
 				playerData.put(p, new PlayerData(loc));
-				p.teleport(loc.clone().add(0,2,0));
 				spawnNextModule(p);
 				count++;
 			}
@@ -124,17 +123,21 @@ public class GameHandler {
 			caller.sendMessage(Main.PREFIX + Main.handler.format("game.running"));
 		}
 	}
-	
+
 	public static void spawnNextModule(Player p) {
 		if (!playerData.containsKey(p))
 			return;
 		PlayerData data = playerData.get(p);
-		
-		ModuleData currModule = gameModules.get(data.currentModule);
-		currModule.remove(data.getStart());
-		
+
+		if (data.currentModule >= 0) {
+			ModuleData currModule = gameModules.get(data.currentModule);
+			currModule.remove(data.getStart());
+		}
+
+		if(data.currentModule>-1) {
+			data.setStart(p.getLocation());
+		}
 		data.currentModule++;
-		data.setStart(p.getLocation());
 
 		ModuleManager.paste(p.getLocation(), gameModules.get(data.currentModule).name);
 
@@ -142,6 +145,11 @@ public class GameHandler {
 		Location moduleStart = gameModules.get(data.currentModule).getStart();
 		correctPos.setYaw(moduleStart.getYaw());
 		correctPos.setPitch(moduleStart.getPitch());
+		if (data.currentModule <= 0) {
+			correctPos.setX(data.start.getX() + 0.5);
+			correctPos.setY(data.start.getY() + 2);
+			correctPos.setZ(data.start.getZ() + 0.5);
+		}
 		p.teleport(correctPos);
 
 	}
