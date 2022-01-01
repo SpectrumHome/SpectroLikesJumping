@@ -29,7 +29,7 @@ import eu.spectrum.listeners.SecurityListener;
 
 public class Main extends JavaPlugin {
 
-	public static final String PREFIX = "ï¿½5SpectroLikesJumping ï¿½rï¿½7-> ";
+	public static final String PREFIX = "§6SpectroLikesJumping §7-> ";
 
 	private static Main instance;
 
@@ -37,11 +37,14 @@ public class Main extends JavaPlugin {
 	
 	public boolean loadingWorld = false;
 	
-	public static LanguageHandler handler = new LanguageHandler(new File("langs"));
+	public static LanguageHandler handler;
 
 	@Override
 	public void onEnable() {
 		instance = this;
+		
+		handler = new LanguageHandler(new File(getDataFolder()+"/lang"),"DEUTSCH");
+		
 		System.out.println(PREFIX + " -> Plugin started.");
 		this.getCommand("module").setExecutor(new CreateCommand());
 		this.getCommand("setup").setExecutor(new SetupCommand());
