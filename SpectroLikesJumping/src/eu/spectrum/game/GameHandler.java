@@ -41,16 +41,16 @@ public class GameHandler {
 				case 20:
 					checkCountdownState(null);
 				case 10:
-					TitleAPI.broadcastTitle("§a" + startCount, "", 4, 13, 2);
+					TitleAPI.broadcastTitle("ï¿½a" + startCount, "", 4, 13, 2);
 					break;
 				case 5:
 				case 4:
-					TitleAPI.broadcastTitle("§6" + startCount, "", 4, 13, 2);
+					TitleAPI.broadcastTitle("ï¿½6" + startCount, "", 4, 13, 2);
 					break;
 				case 3:
 				case 2:
 				case 1:
-					TitleAPI.broadcastTitle("§c" + startCount, "", 4, 13, 2);
+					TitleAPI.broadcastTitle("ï¿½c" + startCount, "", 4, 13, 2);
 					break;
 
 				case 0:
@@ -63,7 +63,7 @@ public class GameHandler {
 				startCount--;
 			}, 20, 20);
 		} else {
-			caller.sendMessage(Main.PREFIX + "§cGame läuft bereits");
+			caller.sendMessage(Main.PREFIX + Main.handler.format("game.running"));
 		}
 	}
 
@@ -72,7 +72,7 @@ public class GameHandler {
 			startCountdown = false;
 			Bukkit.getScheduler().cancelTask(taskID);
 		} else
-			caller.sendMessage(Main.PREFIX + "§cEs läuft kein Countdown.");
+			caller.sendMessage(Main.PREFIX + Main.handler.format("game.countdown.absent"));
 	}
 
 	public static void checkCountdownState(Integer players) {
@@ -97,7 +97,7 @@ public class GameHandler {
 			if (startCountdown)
 				stopGameTimer(caller);
 			if(Main.getInstance().loadingWorld) {
-				caller.sendMessage(Main.PREFIX+"§cDie Welt lädt noch.");
+				caller.sendMessage(Main.PREFIX+ Main.handler.format("game.world.loading"));
 				return;
 			}
 			List<ModuleData> modules = ModuleManager.loadModules();
@@ -121,7 +121,7 @@ public class GameHandler {
 			}
 
 		} else {
-			caller.sendMessage(Main.PREFIX + "§cGame läuft bereits");
+			caller.sendMessage(Main.PREFIX + Main.handler.format("game.running"));
 		}
 	}
 	

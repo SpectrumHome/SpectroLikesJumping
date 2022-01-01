@@ -26,10 +26,10 @@ public class LanguageHandler {
 		return languages;
 	}
 
-	public String format(String s) {
+	public String format(String s, Object... args) {
 		if (selected == null)
 			return s;
-		return selected.format(s);
+		return selected.format(s, args);
 	}
 
 	public void loadLanguage(Language lang) {
