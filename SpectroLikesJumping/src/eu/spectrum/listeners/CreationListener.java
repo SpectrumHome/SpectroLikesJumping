@@ -20,6 +20,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 
 import eu.spectrum.commands.CreateCommand;
+import eu.spectrum.main.Main;
 import eu.spectrum.utils.Difficulty;
 import eu.spectrum.utils.ModuleData;
 import eu.spectrum.utils.ModuleManager;
@@ -57,7 +58,7 @@ public class CreationListener implements Listener {
 
 						if (wasRenamed && namedItem.getItemMeta() != null
 								&& ModuleManager.isModule(namedItem.getItemMeta().getDisplayName().trim())) {
-							inv.setItem(9, CreateCommand.paneFiller((byte) 14, "§c§lDiesen Namen gibt es schon!"));
+							inv.setItem(9, CreateCommand.paneFiller((byte) 14, Main.handler.format("name.exists")));
 							p.updateInventory();
 							return;
 						}
@@ -76,7 +77,7 @@ public class CreationListener implements Listener {
 						} else if (wasRenamed) {
 							ModuleManager.registerModule(p, data);
 						} else {
-							inv.setItem(9, CreateCommand.paneFiller((byte) 14, "§c§lBenenne das Modul!"));
+							inv.setItem(9, CreateCommand.paneFiller((byte) 14, Main.handler.format("name.missing")));
 							p.updateInventory();
 						}
 						quitCreation(p, inv);
@@ -123,9 +124,9 @@ public class CreationListener implements Listener {
 		inv.clear();
 		if (creationMode.containsKey(p)) {
 			creationMode.remove(p);
-			p.sendMessage("§cDu hast die Registrierung abgebrochen.");
+			p.sendMessage(Main.handler.format("module.registration.canceled"));
 		} else {
-			p.sendMessage("\n \n§a§lDas Modul wurde fragmentiert uwu\n \n");
+			p.sendMessage(Main.handler.format("module.registration.suceeded"));
 			p.playSound(p.getLocation(), Sound.LEVEL_UP, 1, 1);
 		}
 		p.getInventory().clear();

@@ -4,8 +4,8 @@ import org.bukkit.ChatColor;
 
 public enum Difficulty {
 
-	EASY("Zu einfach bitch", ChatColor.GREEN, 13, 0), INTERMEDIATE("Bisl bessa", ChatColor.GOLD, 1, 1),
-	HARD("sus ((⇀‸↼))", ChatColor.RED, 14, 2), BEYOND_HARD("BEYOND HARD", ChatColor.DARK_PURPLE, 10, 3);
+	EASY("dfficulty.easy", ChatColor.GREEN, 13, 0), INTERMEDIATE("difficulty.intermediate", ChatColor.GOLD, 1, 1),
+	HARD("difficulty.hard", ChatColor.RED, 14, 2), BEYOND_HARD("difficulty.beyond-hard", ChatColor.DARK_PURPLE, 10, 3);
 
 	String name;
 	ChatColor chatColor;

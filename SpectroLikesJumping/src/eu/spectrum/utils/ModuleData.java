@@ -17,6 +17,7 @@ import org.bukkit.util.Vector;
 import com.sk89q.worldedit.CuboidClipboard;
 
 import eu.spectrum.commands.CreateCommand;
+import eu.spectrum.main.Main;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
@@ -136,10 +137,10 @@ public class ModuleData {
 	public List<CheckField> getCheckFields() {
 		List<CheckField> fields = new ArrayList<CheckField>();
 		try {
-			fields.add(new CheckField(this.getClass().getField("start"), "Start",true));
-			fields.add(new CheckField(this.getClass().getField("end"), "End",true));
-			fields.add(new CheckField(this.getClass().getField("loc1"), "Ecke 1",false));
-			fields.add(new CheckField(this.getClass().getField("loc2"), "Ecke 2",false));
+			fields.add(new CheckField(this.getClass().getField("start"), Main.handler.format("start"),true));
+			fields.add(new CheckField(this.getClass().getField("end"), Main.handler.format("end"),true));
+			fields.add(new CheckField(this.getClass().getField("loc1"), Main.handler.format("corner", 1),false));
+			fields.add(new CheckField(this.getClass().getField("loc2"), Main.handler.format("corner", 2),false));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -205,7 +206,7 @@ public class ModuleData {
 						isNull ? (CreateCommand.setCommand + " " + field.field.getName())
 								: (CreateCommand.removeCommand + " " + field.field.getName())));
 				TextComponent fieldHover = new TextComponent(
-						(isNull ? "§a" : "§c") + field.name + " " + (isNull ? "setzen" : "löschen"));
+						(isNull ? "§a" : "§c") + field.name + " " + (isNull ? Main.handler.format("set") : Main.handler.format("delete")));
 				fieldSection
 						.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] { fieldHover }));
 				comps.add(fieldSection);

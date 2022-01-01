@@ -50,12 +50,12 @@ public class CreateCommand implements CommandExecutor {
 			Player p = (Player) sender;
 			if (p.isOp()) {
 				if (args.length < 1) {
-					p.sendMessage(Main.PREFIX + "§7Benutze §a/module <load NAME, add, loc>");
+					p.sendMessage(Main.PREFIX + Main.handler.format("cmd.create.desc"));
 					return false;
 				}
 				if (args[0].equalsIgnoreCase("load")) {
 					if (args.length < 2) {
-						p.sendMessage(Main.PREFIX + "§cGib ein Modul an du kek.");
+						p.sendMessage(Main.PREFIX + Main.handler.format("module.name-missing"));
 						return false;
 					}
 					ModuleManager.paste(p.getLocation(), assembleArg(1, args));
@@ -70,10 +70,10 @@ public class CreateCommand implements CommandExecutor {
 					}
 					if (!creationMode.containsKey(p)) {
 						creationMode.put(p, new ModuleData());
-						p.sendMessage(Main.PREFIX + "§7Setze dich nun auf den §a§lAnfangspunkt des Moduls§7!");
+						p.sendMessage(Main.PREFIX + Main.handler.format("cmd.create.start"));
 					} else {
 						p.sendMessage(" ");
-						p.sendMessage(Main.PREFIX + "§7Du hast den Registrierungsprozess §c§lverlassen§7!");
+						p.sendMessage(Main.PREFIX + Main.handler.format("cmd.create.leave"));
 						p.sendMessage(" ");
 						p.playSound(p.getLocation(), Sound.BURP, 1, 1);
 						ModuleData data = creationMode.remove(p);
@@ -95,12 +95,13 @@ public class CreateCommand implements CommandExecutor {
 							}
 						} else {
 							if (currData.allSet()) {
-								p.sendMessage(Main.PREFIX + "§cDu hast schon alle Felder gesetzt.");
+								p.sendMessage(Main.PREFIX + Main.handler.format("cmd.create.all-set"));
 								return false;
 							}
-							if(currData.getFieldByName(args[1])!=null && currData.getFieldByName(args[1]).needsPlate) {
-								if(!CreationListener.isCheckpoint(p.getLocation())) {
-									p.sendMessage("§cFür dieses Feld musst du auf einer Druckplatte stehen.");
+							if (currData.getFieldByName(args[1]) != null
+									&& currData.getFieldByName(args[1]).needsPlate) {
+								if (!CreationListener.isCheckpoint(p.getLocation())) {
+									p.sendMessage(Main.PREFIX + Main.handler.format("cmd.create.plate-missing"));
 									return false;
 								}
 							}
@@ -109,16 +110,19 @@ public class CreateCommand implements CommandExecutor {
 								return false;
 							}
 						}
-						p.sendMessage(Main.PREFIX + "§cDieses Feld gibt es nicht.");
+						p.sendMessage(Main.PREFIX + Main.handler.format("field.absent"));
 					} else
-						p.sendMessage(Main.PREFIX + "§cGib ein Feld an");
+						p.sendMessage(Main.PREFIX + Main.handler.format("field.missing"));
 				} else if (args[0].equalsIgnoreCase("delete")) {
 					if (args.length >= 2) {
 						String moduleName = assembleArg(1, args);
-						p.sendMessage(Main.PREFIX + "§7Modul wurde "
-								+ (ModuleManager.delete(moduleName) ? "§agelöscht" : "§cnicht gelöscht") + "§7!");
+						if (ModuleManager.delete(moduleName))
+							p.sendMessage(Main.PREFIX + Main.handler.format("module.delete.succeeded"));
+						else
+							p.sendMessage(Main.PREFIX + Main.handler.format("module.delete.failed"));
+
 					} else {
-						p.sendMessage(Main.PREFIX + "§cGib einen Namen ein!");
+						p.sendMessage(Main.PREFIX + Main.handler.format("name.missing"));
 					}
 				} else if (args[0].equalsIgnoreCase("list")) {
 					final int maxList = 5;
@@ -143,7 +147,8 @@ public class CreateCommand implements CommandExecutor {
 
 								TextComponent text = new TextComponent(
 										module.difficulty.getChatColor() + "  §l» " + module.name);
-								TextComponent hoverText = new TextComponent(module.name + " spawnen");
+								TextComponent hoverText = new TextComponent(
+										Main.handler.format("module.spawn", module.name));
 								HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 										new BaseComponent[] { hoverText });
 								text.setHoverEvent(hoverEvent);
@@ -151,7 +156,7 @@ public class CreateCommand implements CommandExecutor {
 
 								TextComponent edit = new TextComponent(" §7[§a§l✎§7]");
 								edit.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module edit " + module.name));
-								TextComponent hoverEdit = new TextComponent("§aModul bearbeiten");
+								TextComponent hoverEdit = new TextComponent(Main.handler.format("module.edit"));
 								HoverEvent hoverEditEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 										new BaseComponent[] { hoverEdit });
 								edit.setHoverEvent(hoverEditEvent);
@@ -159,10 +164,11 @@ public class CreateCommand implements CommandExecutor {
 
 								p.spigot().sendMessage(text);
 
-								String restMessage = "       §r§7-> Difficulty: " + module.difficulty.getChatColor()
-										+ module.difficulty.getName() + "\n" + "       §7-> Volume: §8"
-										+ (size.getBlockX() * size.getBlockY() * size.getBlockZ()) + " Blocks"
-										+ "\n \n";
+								String restMessage = "       §r§7-> " + Main.handler.format("difficulty") + ": "
+										+ module.difficulty.getChatColor() + module.difficulty.getName() + "\n"
+										+ "       §7-> " + Main.handler.format("volume") + ": §8"
+										+ (size.getBlockX() * size.getBlockY() * size.getBlockZ()) + " "
+										+ Main.handler.format("blocks") + "\n \n";
 
 								p.sendMessage(restMessage);
 							}
@@ -171,12 +177,12 @@ public class CreateCommand implements CommandExecutor {
 						TextComponent defFiller = new TextComponent("§8§m-----------");
 						TextComponent previous = new TextComponent("§6[" + (page + 1) + "§7/");
 						previous.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module list " + (page)));
-						TextComponent previousHover = new TextComponent("§cZurück");
+						TextComponent previousHover = new TextComponent("§c" + Main.handler.format("backwards"));
 						previous.setHoverEvent(
 								new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] { previousHover }));
 						TextComponent next = new TextComponent("§6" + pages + "]");
 						next.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module list " + (page + 2)));
-						TextComponent nextHover = new TextComponent("§aWeiter");
+						TextComponent nextHover = new TextComponent("§a" + Main.handler.format("forwards"));
 						next.setHoverEvent(
 								new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] { nextHover }));
 
@@ -187,7 +193,7 @@ public class CreateCommand implements CommandExecutor {
 
 						p.spigot().sendMessage(base);
 					} catch (Exception ex) {
-						p.sendMessage(Main.PREFIX + "§cEy benutz doch ne Zahl pls.");
+						p.sendMessage(Main.PREFIX + Main.handler.format("cmd.create.use-number"));
 						ex.printStackTrace();
 					}
 				} else if (args[0].equalsIgnoreCase("edit")) {
@@ -197,7 +203,7 @@ public class CreateCommand implements CommandExecutor {
 						openInv(p, true);
 
 					} else {
-						p.sendMessage(Main.PREFIX + "§cDieses Modul existiert nicht!");
+						p.sendMessage(Main.PREFIX + Main.handler.format("module.absent"));
 					}
 
 				}
@@ -237,7 +243,7 @@ public class CreateCommand implements CommandExecutor {
 				openInv(p, false);
 			} else {
 				ModuleManager.registerModule(p, data);
-				p.sendMessage(Main.PREFIX + "§a§lDeine Änderungen am Konstrukt wurden übernommen uwu");
+				p.sendMessage(Main.PREFIX + Main.handler.format("construct.apply-changes"));
 			}
 		}
 	}
@@ -251,7 +257,7 @@ public class CreateCommand implements CommandExecutor {
 		int containerId = entityPlayer.nextContainerCounter();
 
 		((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutOpenWindow(containerId,
-				"minecraft:anvil", new ChatMessage("Modul-Info", new Object[] {}), 0));
+				"minecraft:anvil", new ChatMessage(Main.handler.format("module.info"), new Object[] {}), 0));
 
 		entityPlayer.activeContainer = fakeAnvil;
 		entityPlayer.activeContainer.windowId = containerId;
@@ -279,7 +285,7 @@ public class CreateCommand implements CommandExecutor {
 		ItemStack arrow = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
 		SkullMeta skullMeta = (SkullMeta) arrow.getItemMeta();
 		skullMeta.setOwner("MHF_ArrowRight");
-		skullMeta.setDisplayName("§c§lDifficulties:");
+		skullMeta.setDisplayName("§c§l" + Main.handler.format("difficulties"));
 		arrow.setItemMeta(skullMeta);
 
 		playerInv.setItem(20, arrow);
@@ -287,7 +293,7 @@ public class CreateCommand implements CommandExecutor {
 		ItemStack tickbox = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
 		SkullMeta tickMeta = (SkullMeta) tickbox.getItemMeta();
 		tickMeta.setOwner("MHF_youtube");
-		tickMeta.setDisplayName("§a§lAbschließen");
+		tickMeta.setDisplayName("§a§l" + Main.handler.format("complete"));
 		tickbox.setItemMeta(tickMeta);
 
 		playerInv.setItem(change ? 3 : 4, tickbox);
@@ -296,7 +302,7 @@ public class CreateCommand implements CommandExecutor {
 			ItemStack changeBuild = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
 			SkullMeta buildMeta = (SkullMeta) changeBuild.getItemMeta();
 			buildMeta.setOwner("MHF_cam");
-			buildMeta.setDisplayName("§5§lKonstrukt ändern");
+			buildMeta.setDisplayName(Main.handler.format("construct.change"));
 			changeBuild.setItemMeta(buildMeta);
 
 			playerInv.setItem(5, changeBuild);
@@ -342,22 +348,22 @@ public class CreateCommand implements CommandExecutor {
 
 	public static void printCreationStatus(Player p) {
 		if (creationMode.containsKey(p)) {
-			p.sendMessage("\n \n§8§m---------§a§l[Status]§8§m----------§r\n \n");
-			for(TextComponent comp : creationMode.get(p).toStates()) {
+			p.sendMessage("\n \n§8§m---------§a§l[" + Main.handler.format("state") + "]§8§m----------§r\n \n");
+			for (TextComponent comp : creationMode.get(p).toStates()) {
 				p.spigot().sendMessage(comp);
 			}
 			p.sendMessage("\n \n");
 
 			TextComponent fillerDef = new TextComponent("§8§m----");
 
-			TextComponent cancel = new TextComponent("§7[§4§lAbbrechen§7]");
+			TextComponent cancel = new TextComponent("§7[§4§l" + Main.handler.format("state") +"§7]");
 			cancel.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module add"));
-			TextComponent cancelHover = new TextComponent("§4Registrierung abbrechen");
+			TextComponent cancelHover = new TextComponent(Main.handler.format("cmd.create.cancel-registration"));
 			cancel.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] { cancelHover }));
 
 			TextComponent reset = new TextComponent(" §7[§c§lReset§r§7]");
 			reset.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module add reset"));
-			TextComponent hover = new TextComponent("§cRegistrierung zurücksetzen");
+			TextComponent hover = new TextComponent(Main.handler.format("cmd.create.reset-registration"));
 			reset.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] { hover }));
 
 			TextComponent message = (TextComponent) fillerDef.duplicate();

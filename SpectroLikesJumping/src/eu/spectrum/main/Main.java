@@ -21,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import eu.spectrum.commands.CreateCommand;
 import eu.spectrum.commands.SetupCommand;
 import eu.spectrum.commands.StartCommand;
+import eu.spectrum.lang.LanguageHandler;
 import eu.spectrum.listeners.ConnectionListener;
 import eu.spectrum.listeners.CreationListener;
 import eu.spectrum.listeners.GameListener;
@@ -28,13 +29,15 @@ import eu.spectrum.listeners.SecurityListener;
 
 public class Main extends JavaPlugin {
 
-	public static final String PREFIX = "§5SpectroLikesJumping §r§7-> ";
+	public static final String PREFIX = "ï¿½5SpectroLikesJumping ï¿½rï¿½7-> ";
 
 	private static Main instance;
 
 	public static final String worldName = "mapa";
 	
 	public boolean loadingWorld = false;
+	
+	public static LanguageHandler handler = new LanguageHandler(new File("langs"));
 
 	@Override
 	public void onEnable() {

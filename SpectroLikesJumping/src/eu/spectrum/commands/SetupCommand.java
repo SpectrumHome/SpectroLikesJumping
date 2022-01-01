@@ -29,7 +29,7 @@ public class SetupCommand implements CommandExecutor {
 				if (args.length > 0) {
 					String arg = args[0];
 					if (arg.equalsIgnoreCase("list")) {
-						p.sendMessage(Main.PREFIX + "§7Locations: §a" + arrString(locs));
+						p.sendMessage(Main.PREFIX + Main.handler.format("cmd.setup.list", arrString(locs)));
 						return false;
 					} else if (arg.equalsIgnoreCase("tp")) {
 						if (args.length > 1 && isLoc(args[1])) {
@@ -47,9 +47,9 @@ public class SetupCommand implements CommandExecutor {
 				if (args.length <= 0 || args[0].equalsIgnoreCase("help") || !isLoc(args[0])) {
 					String[] arr = missingLocs();
 					if (arr.length <= 0) {
-						p.sendMessage(Main.PREFIX + "§aDu hast schon alle Locations gesetzt uwu");
+						p.sendMessage(Main.PREFIX + Main.handler.format("cmd.startup.all-set"));
 					} else
-						p.sendMessage(Main.PREFIX + "§7Es fehlt noch: §a/setup <" + arrString(arr) +">");
+						p.sendMessage(Main.PREFIX + Main.handler.format("cmd.setup.missing-locs", arrString(arr)));
 					return false;
 				} else {
 					File file = new File(Main.getInstance().getDataFolder() + "/" + SetupCommand.file);
@@ -60,7 +60,7 @@ public class SetupCommand implements CommandExecutor {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					p.sendMessage(Main.PREFIX + "§7Du hast §a" + args[0] + " §7gesetzt.");
+					p.sendMessage(Main.PREFIX + Main.handler.format("cmd.setup.set-loc", args[0]));
 					p.playSound(p.getLocation(), Sound.NOTE_PLING, 1, 1);
 				}
 			}

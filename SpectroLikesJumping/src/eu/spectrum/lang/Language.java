@@ -25,11 +25,14 @@ public class Language {
 		return name.substring(0, name.length()-5); //removes .lang suffix
 	}
 	
-	public String format(String s) {
+	public String format(String s, Object... args) {
 		if(prop.containsKey(s))
-			return prop.getProperty(s);
+			s = prop.getProperty(s);
+		int count = 0;
+		for(Object o : args) {
+			s = s.replace("%" + count, o.toString());
+			count++;
+		}
 		return s;
 	}
-	
-
 }

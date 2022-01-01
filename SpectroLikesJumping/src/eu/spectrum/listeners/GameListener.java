@@ -26,9 +26,9 @@ public class GameListener implements Listener {
 				PlayerData data = GameHandler.playerData.get(p);
 				if (p.getLocation().getBlock().getLocation().distance(data.getEnd().getBlock().getLocation()) < 2) {
 					if (data.currentModule >= GameHandler.gameModules.size() - 1) {
-						p.sendMessage("§aYay das is das Ziel");
+						p.sendMessage(Main.handler.format("game.reached-goal"));
 					} else {
-						p.sendMessage(Main.PREFIX + "§aCheckpoint");
+						p.sendMessage(Main.PREFIX + "ï¿½aCheckpoint");
 						spawnNextModule(p);
 					}
 				}

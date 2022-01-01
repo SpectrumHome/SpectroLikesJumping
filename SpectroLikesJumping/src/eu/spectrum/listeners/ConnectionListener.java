@@ -19,7 +19,7 @@ public class ConnectionListener implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		e.setJoinMessage("§a» §a" + p.getName() + " §7hat das Spiel betreten.");
+		e.setJoinMessage(Main.handler.format("game.player.joined", p.getName()));
 		p.teleport(SetupCommand.getLocation("waiting_lobby"));
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), ()->{
 			GameHandler.checkCountdownState(null);
@@ -29,9 +29,9 @@ public class ConnectionListener implements Listener {
 	@EventHandler
 	public void onPreConnect(AsyncPlayerPreLoginEvent e) {
 		if (Bukkit.getOnlinePlayers().size() >= GameHandler.MAX_PLAYERS)
-			e.disallow(Result.KICK_FULL, "Game's full bitch");
+			e.disallow(Result.KICK_FULL, Main.handler.format("game.full"));
 		else if (GameHandler.gameState != GameState.LOBBY)
-			e.disallow(Result.KICK_FULL, "Game's running bitch");
+			e.disallow(Result.KICK_FULL, Main.handler.format("game.running"));
 		
 	}
 	
@@ -40,7 +40,7 @@ public class ConnectionListener implements Listener {
 	public void onLeave(PlayerQuitEvent e) {
 		Player p = e.getPlayer();
 		GameHandler.checkCountdownState(Bukkit.getOnlinePlayers().size()-1);
-		e.setQuitMessage("§c« §c" + p.getName() + " §7hat das Spiel verlassen.");
+		e.setQuitMessage(Main.handler.format("game.player.left", p.getName()));
 	}
 
 }
