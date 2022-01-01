@@ -160,10 +160,11 @@ public class ModuleData {
 		}
 		return set;
 	}
-	
+
 	public CheckField getFieldByName(String name) {
-		for(CheckField field : getCheckFields()) {
-			if(field.field.getName().equalsIgnoreCase(name)) return field;
+		for (CheckField field : getCheckFields()) {
+			if (field.field.getName().equalsIgnoreCase(name))
+				return field;
 		}
 		return null;
 	}
@@ -175,9 +176,9 @@ public class ModuleData {
 		}
 		return false;
 	}
-	
+
 	public boolean setField(String name, Object value) {
-		if(isField(name)) {
+		if (isField(name)) {
 			try {
 				this.getClass().getField(name).set(this, value);
 				return true;
@@ -188,10 +189,23 @@ public class ModuleData {
 		}
 		return false;
 	}
-	
-//	public boolean locExists(Location loc) {
-//		lolol
-//	}
+
+	public boolean locExists(Location loc) {
+		try {
+			for (CheckField field : getCheckFields()) {
+				if (field.field.get(this) instanceof Location) {
+					if (((Location) field.field.get(this)).getBlock().getLocation()
+							.distance(loc.getBlock().getLocation()) < 1)
+						return true;
+				}
+			}
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 
 	public List<TextComponent> toStates() {
 		List<TextComponent> comps = new ArrayList<>();

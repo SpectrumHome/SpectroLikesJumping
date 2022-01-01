@@ -100,18 +100,23 @@ public class GameHandler {
 				caller.sendMessage(Main.PREFIX+ Main.handler.format("game.world.loading"));
 				return;
 			}
-			gameState = GameState.INGAME;
+			List<ModuleData> modules = ModuleManager.loadModules();
+			if(modules.size()<=0) {
+				caller.sendMessage(Main.PREFIX + "§cEs existieren keine Module.");
+				return;
+			}
+				gameState = GameState.INGAME;
 			gameModules.clear();
-			gameModules = ModuleManager.loadModules();
-
+			gameModules = modules;
+			
 			Vector totalSize = ModuleManager.getSize(gameModules);
 
 			int count = 0;
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				Location loc = new Location(Main.getInstance().getWorld(), 0d, 100d, (totalSize.getZ() + 20) * count);
-				ModuleManager.paste(loc, gameModules.get(0).name);
-				p.teleport(loc.add(0, 1, 0));
 				playerData.put(p, new PlayerData(loc));
+				p.teleport(loc.clone().add(0,2,0));
+				spawnNextModule(p);
 				count++;
 			}
 
@@ -120,5 +125,25 @@ public class GameHandler {
 		}
 	}
 	
+	public static void spawnNextModule(Player p) {
+		if (!playerData.containsKey(p))
+			return;
+		PlayerData data = playerData.get(p);
+		
+		ModuleData currModule = gameModules.get(data.currentModule);
+		currModule.remove(data.getStart());
+		
+		data.currentModule++;
+		data.setStart(p.getLocation());
+
+		ModuleManager.paste(p.getLocation(), gameModules.get(data.currentModule).name);
+
+		Location correctPos = p.getLocation();
+		Location moduleStart = gameModules.get(data.currentModule).getStart();
+		correctPos.setYaw(moduleStart.getYaw());
+		correctPos.setPitch(moduleStart.getPitch());
+		p.teleport(correctPos);
+
+	}
 
 }

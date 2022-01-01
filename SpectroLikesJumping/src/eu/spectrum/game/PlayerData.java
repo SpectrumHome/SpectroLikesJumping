@@ -14,7 +14,7 @@ public class PlayerData {
 	public int minHeight;
 
 	public PlayerData(Location start) {
-		currentModule = 0;
+		currentModule = -1;
 		setStart(start);
 	}
 	
