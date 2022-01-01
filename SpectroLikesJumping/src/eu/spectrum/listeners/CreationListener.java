@@ -43,7 +43,7 @@ public class CreationListener implements Listener {
 			if (currentItem.getItemMeta() instanceof SkullMeta) {
 				boolean cam = ((SkullMeta) currentItem.getItemMeta()).getOwner().equalsIgnoreCase("MHF_cam");
 				if (((SkullMeta) currentItem.getItemMeta()).getOwner().equalsIgnoreCase("MHF_youtube") || cam) {
-					ModuleData data = creationMode.remove(p);
+					ModuleData data = creationMode.get(p);
 
 					try {
 
@@ -79,6 +79,7 @@ public class CreationListener implements Listener {
 							inv.setItem(9, CreateCommand.paneFiller((byte) 14, "§c§lBenenne das Modul!"));
 							p.updateInventory();
 						}
+						creationMode.remove(p);
 						quitCreation(p, inv);
 						p.closeInventory();
 					} catch (Exception ex) {

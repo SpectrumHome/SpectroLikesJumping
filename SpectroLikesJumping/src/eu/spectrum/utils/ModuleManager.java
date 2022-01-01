@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -133,13 +134,18 @@ public class ModuleManager {
 		YamlConfiguration info = getModuleConfig(data.name);
 		info.set("name", data.name);
 		info.set("difficulty", data.difficulty.toString());
-		info.set("start", data.getStart().toVector().subtract(min.toVector()).toLocation(data.getStart().getWorld()));
-		info.set("end", data.getEnd().toVector().subtract(min.toVector()).toLocation(data.getStart().getWorld()));
+		
+		World world = data.getStart().getWorld();
+		float yaw = data.getStart().getYaw();
+		float pitch = data.getStart().getPitch();
+		
+		info.set("start", data.getStart().toVector().subtract(min.toVector()).toLocation(world,yaw,pitch));
+		info.set("end", data.getEnd().toVector().subtract(min.toVector()).toLocation(world,yaw,pitch));
 		saveModuleConfig(info, data.name);
 
 		p.teleport(data.getStart());
-		VectorUtils.fillWith(min, max, Material.AIR);
 		ModuleManager.saveSchematic(p, min, max, data.getStart(), data.name);
+		VectorUtils.fillWith(min, max, Material.AIR);
 	}
 
 	public static boolean copyModule(String originModule, String newModule) {

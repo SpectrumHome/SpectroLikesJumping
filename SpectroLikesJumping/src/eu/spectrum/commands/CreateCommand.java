@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.Sound;
@@ -58,7 +59,14 @@ public class CreateCommand implements CommandExecutor {
 						p.sendMessage(Main.PREFIX + "§cGib ein Modul an du kek.");
 						return false;
 					}
-					ModuleManager.paste(p.getLocation(), assembleArg(1, args));
+					String moduleName = assembleArg(1, args);
+					if (ModuleManager.isModule(moduleName)) {
+						ModuleData data = ModuleManager.getModule(moduleName);
+						Location nLoc = new Location(p.getWorld(),p.getLocation().getX(),p.getLocation().getY(),p.getLocation().getZ(),data.start.getYaw(),data.start.getPitch());
+						p.teleport(nLoc);
+						ModuleManager.paste(p.getLocation(), assembleArg(1, args));
+					}
+					else p.sendMessage(Main.PREFIX + "§cEs gibt kein Modul mit diesem Namen.");
 				} else if (args[0].equalsIgnoreCase("add")) {
 					if (args.length >= 2 && args[1].startsWith("reset")) {
 						if (creationMode.containsKey(p)) {
@@ -70,7 +78,7 @@ public class CreateCommand implements CommandExecutor {
 					}
 					if (!creationMode.containsKey(p)) {
 						creationMode.put(p, new ModuleData());
-						p.sendMessage(Main.PREFIX + "§7Setze dich nun auf den §a§lAnfangspunkt des Moduls§7!");
+						step(p);
 					} else {
 						p.sendMessage(" ");
 						p.sendMessage(Main.PREFIX + "§7Du hast den Registrierungsprozess §c§lverlassen§7!");
@@ -98,19 +106,21 @@ public class CreateCommand implements CommandExecutor {
 								p.sendMessage(Main.PREFIX + "§cDu hast schon alle Felder gesetzt.");
 								return false;
 							}
-							if(currData.getFieldByName(args[1])!=null && currData.getFieldByName(args[1]).needsPlate) {
-								if(!CreationListener.isCheckpoint(p.getLocation())) {
-									p.sendMessage(Main.PREFIX+"§cFür dieses Feld musst du auf einer Druckplatte stehen.");
+							if (currData.getFieldByName(args[1]) != null
+									&& currData.getFieldByName(args[1]).needsPlate) {
+								if (!CreationListener.isCheckpoint(p.getLocation())) {
+									p.sendMessage(
+											Main.PREFIX + "§cFür dieses Feld musst du auf einer Druckplatte stehen.");
 									return false;
 								}
 							}
-							if(currData.locExists(p.getLocation())) {
+							if (!currData.locExists(p.getLocation())) {
 								if (currData.setField(args[1], p.getLocation())) {
 									step(p);
 									return false;
 								}
 							} else {
-								p.sendMessage(Main.PREFIX+"§cDen gleichen Ort besitzt das Modul schon.");
+								p.sendMessage(Main.PREFIX + "§cDen gleichen Ort besitzt das Modul schon.");
 								return false;
 							}
 						}
@@ -126,13 +136,17 @@ public class CreateCommand implements CommandExecutor {
 						p.sendMessage(Main.PREFIX + "§cGib einen Namen ein!");
 					}
 				} else if (args[0].equalsIgnoreCase("list")) {
+					List<ModuleData> modules = ModuleManager.loadModules();
+					if (modules.size() <= 0) {
+						p.sendMessage(Main.PREFIX + "§aFüge ein Modul mit \"/module add\" hinzu!");
+						return false;
+					}
 					final int maxList = 5;
 					try {
 						int page = args.length > 1 ? Integer.parseInt(args[1]) : 1;
 						page -= 1;
 						if (page < 0)
 							page = 0;
-						List<ModuleData> modules = ModuleManager.loadModules();
 
 						int pages = (int) Math.ceil((double) modules.size() / (double) maxList);
 
@@ -348,7 +362,7 @@ public class CreateCommand implements CommandExecutor {
 	public static void printCreationStatus(Player p) {
 		if (creationMode.containsKey(p)) {
 			p.sendMessage("\n \n§8§m---------§a§l[Status]§8§m----------§r\n \n");
-			for(TextComponent comp : creationMode.get(p).toStates()) {
+			for (TextComponent comp : creationMode.get(p).toStates()) {
 				p.spigot().sendMessage(comp);
 			}
 			p.sendMessage("\n \n");
