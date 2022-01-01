@@ -39,7 +39,8 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
-		System.out.println(PREFIX + " -> Plugin started.");
+		System.out.println(PREFIX + " -> Plugin started.")
+		d
 
 		this.getCommand("module").setExecutor(new CreateCommand());
 		this.getCommand("setup").setExecutor(new SetupCommand());
