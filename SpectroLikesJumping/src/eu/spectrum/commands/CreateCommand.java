@@ -100,12 +100,17 @@ public class CreateCommand implements CommandExecutor {
 							}
 							if(currData.getFieldByName(args[1])!=null && currData.getFieldByName(args[1]).needsPlate) {
 								if(!CreationListener.isCheckpoint(p.getLocation())) {
-									p.sendMessage("§cFür dieses Feld musst du auf einer Druckplatte stehen.");
+									p.sendMessage(Main.PREFIX+"§cFür dieses Feld musst du auf einer Druckplatte stehen.");
 									return false;
 								}
 							}
-							if (currData.setField(args[1], p.getLocation())) {
-								step(p);
+							if(currData.locExists(p.getLocation())) {
+								if (currData.setField(args[1], p.getLocation())) {
+									step(p);
+									return false;
+								}
+							} else {
+								p.sendMessage(Main.PREFIX+"§cDen gleichen Ort besitzt das Modul schon.");
 								return false;
 							}
 						}
