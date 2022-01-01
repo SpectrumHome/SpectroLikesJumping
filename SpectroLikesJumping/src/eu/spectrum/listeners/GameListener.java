@@ -25,7 +25,6 @@ public class GameListener implements Listener {
 					if (data.currentModule >= GameHandler.gameModules.size() - 1) {
 						p.sendMessage(Main.handler.format("game.reached-goal"));
 					} else {
-
 						p.sendMessage(Main.PREFIX + "§aCheckpoint");
 						GameHandler.spawnNextModule(p);
 					}
