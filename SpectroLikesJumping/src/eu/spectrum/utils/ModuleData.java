@@ -187,9 +187,9 @@ public class ModuleData {
 		return false;
 	}
 	
-	public boolean locExists(Location loc) {
-		
-	}
+//	public boolean locExists(Location loc) {
+//		lolol
+//	}
 
 	public List<TextComponent> toStates() {
 		List<TextComponent> comps = new ArrayList<>();
