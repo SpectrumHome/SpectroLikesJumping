@@ -204,6 +204,7 @@ public class ModuleData {
 		return false;
 	}
 
+
 	public List<TextComponent> toStates() {
 		List<TextComponent> comps = new ArrayList<>();
 		List<CheckField> fields = getCheckFields();
