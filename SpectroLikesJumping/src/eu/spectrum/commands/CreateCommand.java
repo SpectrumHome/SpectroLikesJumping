@@ -66,7 +66,7 @@ public class CreateCommand implements CommandExecutor {
 						p.teleport(nLoc);
 						ModuleManager.paste(p.getLocation(), assembleArg(1, args));
 					}
-					else p.sendMessage(Main.PREFIX + "§cEs gibt kein Modul mit diesem Namen.");
+					else p.sendMessage(Main.PREFIX + Main.handler.format("module.absent"));
 				} else if (args[0].equalsIgnoreCase("add")) {
 					if (args.length >= 2 && args[1].startsWith("reset")) {
 						if (creationMode.containsKey(p)) {
@@ -120,7 +120,7 @@ public class CreateCommand implements CommandExecutor {
 									return false;
 								}
 							} else {
-								p.sendMessage(Main.PREFIX + "§cDen gleichen Ort besitzt das Modul schon.");
+								p.sendMessage(Main.PREFIX + Main.handler.format("module.same-location"));
 								return false;
 							}
 						}
@@ -141,7 +141,7 @@ public class CreateCommand implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("list")) {
 					List<ModuleData> modules = ModuleManager.loadModules();
 					if (modules.size() <= 0) {
-						p.sendMessage(Main.PREFIX + "§aFüge ein Modul mit \"/module add\" hinzu!");
+						p.sendMessage(Main.PREFIX + Main.handler.format("module.add"));
 						return false;
 					}
 					final int maxList = 5;
@@ -156,7 +156,7 @@ public class CreateCommand implements CommandExecutor {
 						if (page > pages - 1)
 							page = pages - 1;
 
-						p.sendMessage("§8§m---------§6[Modules]§8§m----------§r\n \n");
+						p.sendMessage("§8§m---------§6[" + Main.handler.format("modules") + "]§8§m----------§r\n \n");
 
 						for (int i = page * maxList; i < (page * maxList) + maxList; i++) {
 							if (i <= modules.size() - 1) {
@@ -375,12 +375,12 @@ public class CreateCommand implements CommandExecutor {
 
 			TextComponent fillerDef = new TextComponent("§8§m----");
 
-			TextComponent cancel = new TextComponent("§7[§4§l" + Main.handler.format("state") +"§7]");
+			TextComponent cancel = new TextComponent("§7[§4§l" + Main.handler.format("cancel") +"§7]");
 			cancel.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module add"));
 			TextComponent cancelHover = new TextComponent(Main.handler.format("cmd.create.cancel-registration"));
 			cancel.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] { cancelHover }));
 
-			TextComponent reset = new TextComponent(" §7[§c§lReset§r§7]");
+			TextComponent reset = new TextComponent(" §7[§c§l" + Main.handler.format("reset") + "§r§7]");
 			reset.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module add reset"));
 			TextComponent hover = new TextComponent(Main.handler.format("cmd.create.reset-registration"));
 			reset.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] { hover }));
