@@ -21,6 +21,7 @@ import org.bukkit.util.Vector;
 
 import eu.spectrum.commands.CreateCommand;
 import eu.spectrum.main.Main;
+import eu.spectrum.main.Systems;
 import eu.spectrum.utils.Difficulty;
 import eu.spectrum.utils.ModuleData;
 import eu.spectrum.utils.ModuleManager;
@@ -28,10 +29,6 @@ import eu.spectrum.utils.ModuleManager;
 public class CreationListener implements Listener {
 
 	public static HashMap<Player, ModuleData> creationMode = new HashMap<Player, ModuleData>();
-
-	public static boolean isCheckpoint(Location loc) {
-		return loc.getBlock().getType()==Material.WOOD_PLATE && loc.getBlock().getLocation().subtract(0, 1, 0).getBlock().getType()==Material.GOLD_BLOCK;
-	}
 
 	@EventHandler
 	public void onAnvilInv(InventoryClickEvent e) {
@@ -62,7 +59,11 @@ public class CreationListener implements Listener {
 							p.updateInventory();
 							return;
 						}
-						if (!originItem.getItemMeta().getDisplayName().equalsIgnoreCase(ModuleManager.defModuleName)) {
+						boolean editing = !originItem.getItemMeta().getDisplayName()
+								.equalsIgnoreCase(Systems.defModuleName);
+						if (editing || wasRenamed)
+							creationMode.remove(p);
+						if (editing) {
 							String oldModule = originItem.getItemMeta().getDisplayName().trim();
 							YamlConfiguration config = ModuleManager.getModuleConfig(oldModule);
 							config.set("name", data.name);
@@ -79,15 +80,16 @@ public class CreationListener implements Listener {
 						} else {
 							inv.setItem(9, CreateCommand.paneFiller((byte) 14, Main.handler.format("name.missing")));
 							p.updateInventory();
+							return;
 						}
-						creationMode.remove(p);
+
 						quitCreation(p, inv);
 						p.closeInventory();
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
 					if (cam) {
-						Location start = p.getLocation().add(new Vector(3,3,3));
+						Location start = p.getLocation().add(new Vector(3, 3, 3));
 						data.tmpStart = start;
 						ModuleManager.paste(start, data.name);
 						data.resetCheckpoints();
@@ -145,7 +147,8 @@ public class CreationListener implements Listener {
 		Player p = (Player) e.getPlayer();
 		Inventory inv = e.getInventory();
 		if (inv.getType() == InventoryType.ANVIL && creationMode.containsKey(p)) {
-			quitCreation(p, inv);
+			p.sendMessage("quitting");
+//			quitCreation(p, inv);
 		}
 	}
 

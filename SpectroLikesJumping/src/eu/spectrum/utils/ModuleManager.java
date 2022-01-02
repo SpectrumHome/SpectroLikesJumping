@@ -35,8 +35,6 @@ import eu.spectrum.main.Main;
 @SuppressWarnings("deprecation")
 public class ModuleManager {
 
-	public static final String defModuleName = "Modul Name";
-
 	public static void saveSchematic(Player player, Location loc1, Location loc2, Location startLoc, String name) {
 		try {
 			File schematic = new File(moduleFolder(name) + "/construct.schematic");

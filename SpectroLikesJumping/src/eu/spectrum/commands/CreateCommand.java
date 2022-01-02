@@ -22,8 +22,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import com.sk89q.worldedit.Vector;
 
-import eu.spectrum.listeners.CreationListener;
 import eu.spectrum.main.Main;
+import eu.spectrum.main.Systems;
 import eu.spectrum.utils.Difficulty;
 import eu.spectrum.utils.ModuleData;
 import eu.spectrum.utils.ModuleManager;
@@ -108,7 +108,7 @@ public class CreateCommand implements CommandExecutor {
 							}
 							if (currData.getFieldByName(args[1]) != null
 									&& currData.getFieldByName(args[1]).needsPlate) {
-								if (!CreationListener.isCheckpoint(p.getLocation())) {
+								if (!Systems.isCheckpoint(p.getLocation())) {
 									p.sendMessage(Main.PREFIX + Main.handler.format("cmd.create.plate-missing"));
 
 									return false;
@@ -286,7 +286,7 @@ public class CreateCommand implements CommandExecutor {
 		Inventory inv = fakeAnvil.getBukkitView().getTopInventory();
 		ItemStack paper = new ItemStack(Material.PAPER);
 		ItemMeta meta = paper.getItemMeta();
-		meta.setDisplayName(data.name == null ? ModuleManager.defModuleName : data.name);
+		meta.setDisplayName(data.name == null ? Systems.defModuleName : data.name);
 		paper.setItemMeta(meta);
 		inv.setItem(0, paper);
 

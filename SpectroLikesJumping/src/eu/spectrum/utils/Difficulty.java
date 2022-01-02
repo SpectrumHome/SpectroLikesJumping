@@ -2,6 +2,8 @@ package eu.spectrum.utils;
 
 import org.bukkit.ChatColor;
 
+import eu.spectrum.main.Main;
+
 public enum Difficulty {
 
 	EASY("dfficulty.easy", ChatColor.GREEN, 13, 0), INTERMEDIATE("difficulty.intermediate", ChatColor.GOLD, 1, 1),
@@ -24,7 +26,7 @@ public enum Difficulty {
 	}
 
 	public String getName() {
-		return name;
+		return Main.handler.format(name);
 	}
 
 	public ChatColor getChatColor() {
