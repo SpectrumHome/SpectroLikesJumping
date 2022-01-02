@@ -5,11 +5,11 @@ cmd.create.all-set=§cDu hast schon alle Felder gesetzt.
 cmd.create.plate-missing=§cFür dieses Feld musst du auf einer Druckplatte stehen.
 cmd.create.use-number=§cEy benutz doch ne Zahl pls.
 cmd.create.cancel-registration=§4Registrierung abbrechen
-cmd.create.reset-registration=§4Registrierung zrücksetzen
+cmd.create.reset-registration=§cRegistrierung zurücksetzen
 
-cmd.setup.list=§7Locations: §a %0
+cmd.setup.list=§7Locations= §a %0
 cmd.setup.all-set=§aDu hast schon alle Locations gesetzt uwu
-cmd.setup.missing-locs=§7Es fehlt noch: §a/setup <%0>
+cmd.setup.missing-locs=§7Es fehlt noch= §a/setup <%0>
 cmd.setup.set-loc=§7Du hast §a%0 §7gesetzt.
 
 module.add=§aFüge ein Modul mit \"/module add\" hinzu!

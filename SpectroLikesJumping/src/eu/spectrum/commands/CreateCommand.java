@@ -62,11 +62,12 @@ public class CreateCommand implements CommandExecutor {
 					String moduleName = assembleArg(1, args);
 					if (ModuleManager.isModule(moduleName)) {
 						ModuleData data = ModuleManager.getModule(moduleName);
-						Location nLoc = new Location(p.getWorld(),p.getLocation().getX(),p.getLocation().getY(),p.getLocation().getZ(),data.start.getYaw(),data.start.getPitch());
+						Location nLoc = new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY(),
+								p.getLocation().getZ(), data.start.getYaw(), data.start.getPitch());
 						p.teleport(nLoc);
 						ModuleManager.paste(p.getLocation(), assembleArg(1, args));
-					}
-					else p.sendMessage(Main.PREFIX + Main.handler.format("module.absent"));
+					} else
+						p.sendMessage(Main.PREFIX + Main.handler.format("module.absent"));
 				} else if (args[0].equalsIgnoreCase("add")) {
 					if (args.length >= 2 && args[1].startsWith("reset")) {
 						if (creationMode.containsKey(p)) {
@@ -171,6 +172,11 @@ public class CreateCommand implements CommandExecutor {
 										new BaseComponent[] { hoverText });
 								text.setHoverEvent(hoverEvent);
 								text.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module load " + module.name));
+
+								TextComponent delete = new TextComponent(" §7[§c§l🗑§7]");
+
+								// TODO: delete comp, filler comp with two spaces, inventory with 1 column and wool to
+								// accept(hashmap,listener)
 
 								TextComponent edit = new TextComponent(" §7[§a§l✎§7]");
 								edit.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module edit " + module.name));
@@ -375,7 +381,7 @@ public class CreateCommand implements CommandExecutor {
 
 			TextComponent fillerDef = new TextComponent("§8§m----");
 
-			TextComponent cancel = new TextComponent("§7[§4§l" + Main.handler.format("cancel") +"§7]");
+			TextComponent cancel = new TextComponent("§7[§4§l" + Main.handler.format("cancel") + "§7]");
 			cancel.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module add"));
 			TextComponent cancelHover = new TextComponent(Main.handler.format("cmd.create.cancel-registration"));
 			cancel.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] { cancelHover }));
