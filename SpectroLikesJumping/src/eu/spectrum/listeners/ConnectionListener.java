@@ -13,6 +13,7 @@ import eu.spectrum.commands.SetupCommand;
 import eu.spectrum.game.GameHandler;
 import eu.spectrum.game.GameState;
 import eu.spectrum.main.Main;
+import eu.spectrum.main.Systems;
 
 public class ConnectionListener implements Listener {
 
@@ -28,7 +29,7 @@ public class ConnectionListener implements Listener {
 
 	@EventHandler
 	public void onPreConnect(AsyncPlayerPreLoginEvent e) {
-		if (Bukkit.getOnlinePlayers().size() >= GameHandler.MAX_PLAYERS)
+		if (Bukkit.getOnlinePlayers().size() >= Systems.MAX_PLAYERS)
 			e.disallow(Result.KICK_FULL, Main.handler.format("game.full"));
 		else if (GameHandler.gameState != GameState.LOBBY)
 			e.disallow(Result.KICK_FULL, Main.handler.format("game.running"));

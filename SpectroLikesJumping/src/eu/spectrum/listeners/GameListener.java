@@ -12,6 +12,7 @@ import eu.spectrum.game.GameHandler;
 import eu.spectrum.game.GameState;
 import eu.spectrum.game.PlayerData;
 import eu.spectrum.main.Main;
+import eu.spectrum.main.Systems;
 
 public class GameListener implements Listener {
 
@@ -19,7 +20,7 @@ public class GameListener implements Listener {
 	public void interact(PlayerInteractEvent e) {
 		if (e.getAction() == Action.PHYSICAL && GameHandler.gameState == GameState.INGAME) {
 			Player p = e.getPlayer();
-			if (GameHandler.playerData.containsKey(p) && CreationListener.isCheckpoint(p.getLocation())) {
+			if (GameHandler.playerData.containsKey(p) && Systems.isCheckpoint(p.getLocation())) {
 				PlayerData data = GameHandler.playerData.get(p);
 				if (p.getLocation().getBlock().getLocation().distance(data.getEnd().getBlock().getLocation()) < 2) {
 					if (data.currentModule >= GameHandler.gameModules.size() - 1) {

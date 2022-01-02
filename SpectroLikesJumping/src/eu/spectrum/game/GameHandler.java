@@ -13,15 +13,11 @@ import eu.spectrum.main.Main;
 import eu.spectrum.utils.ModuleData;
 import eu.spectrum.utils.ModuleManager;
 import eu.spectrum.utils.TitleAPI;
+import static eu.spectrum.main.Systems.*;
 
 public class GameHandler {
 
 	public static GameState gameState = GameState.LOBBY;
-
-	public static final int MAX_PLAYERS = 3;
-	public static final int MIN_PLAYERS = 2;
-
-	public static final int maxLobbyCount = 40;
 
 	public static boolean startCountdown = false;
 	public static int taskID = 0;
@@ -134,21 +130,19 @@ public class GameHandler {
 			currModule.remove(data.getStart());
 		}
 
-		if(data.currentModule>-1) {
-			data.setStart(p.getLocation());
-		}
+		Location start = data.currentModule > -1 ? p.getLocation() : data.start;
 		data.currentModule++;
-
-		ModuleManager.paste(p.getLocation(), gameModules.get(data.currentModule).name);
-
-		Location correctPos = p.getLocation();
 		Location moduleStart = gameModules.get(data.currentModule).getStart();
-		correctPos.setYaw(moduleStart.getYaw());
-		correctPos.setPitch(moduleStart.getPitch());
+		start.setYaw(moduleStart.getYaw());
+		start.setPitch(moduleStart.getPitch());
+		start.add(0.5, 0, 0.5);
+		data.setStart(start);
+
+		ModuleManager.paste(start, gameModules.get(data.currentModule).name);
+
+		Location correctPos = start.clone();
 		if (data.currentModule <= 0) {
-			correctPos.setX(data.start.getX() + 0.5);
 			correctPos.setY(data.start.getY() + 2);
-			correctPos.setZ(data.start.getZ() + 0.5);
 		}
 		p.teleport(correctPos);
 

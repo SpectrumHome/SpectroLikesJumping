@@ -14,12 +14,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import eu.spectrum.main.Main;
+import eu.spectrum.main.Systems;
 
 public class SetupCommand implements CommandExecutor {
-
-	public static final String file = "setup.yml";
-
-	public static final String[] locs = new String[] { "waiting_lobby", "ending_lobby" };
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String name, String[] args) {
@@ -29,7 +26,7 @@ public class SetupCommand implements CommandExecutor {
 				if (args.length > 0) {
 					String arg = args[0];
 					if (arg.equalsIgnoreCase("list")) {
-						p.sendMessage(Main.PREFIX + Main.handler.format("cmd.setup.list", arrString(locs)));
+						p.sendMessage(Main.PREFIX + Main.handler.format("cmd.setup.list", arrString(Systems.locs)));
 						return false;
 					} else if (arg.equalsIgnoreCase("tp")) {
 						if (args.length > 1 && isLoc(args[1])) {
@@ -52,7 +49,7 @@ public class SetupCommand implements CommandExecutor {
 						p.sendMessage(Main.PREFIX + Main.handler.format("cmd.setup.missing-locs", arrString(arr)));
 					return false;
 				} else {
-					File file = new File(Main.getInstance().getDataFolder() + "/" + SetupCommand.file);
+					File file = new File(Main.getInstance().getDataFolder() + "/" + Systems.setUpFile);
 					YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 					config.set(args[0].toLowerCase(), p.getLocation());
 					try {
@@ -69,7 +66,7 @@ public class SetupCommand implements CommandExecutor {
 	}
 
 	public static Location getLocation(String key) {
-		File file = new File(Main.getInstance().getDataFolder() + "/" + SetupCommand.file);
+		File file = new File(Main.getInstance().getDataFolder() + "/" + Systems.setUpFile);
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 		if (!isLoc(key))
 			return null;
@@ -78,7 +75,7 @@ public class SetupCommand implements CommandExecutor {
 
 	public static boolean isLoc(String loc) {
 		boolean res = false;
-		for (String l : locs) {
+		for (String l : Systems.locs) {
 			if (loc.equalsIgnoreCase(l)) {
 				res = true;
 				break;
@@ -97,10 +94,10 @@ public class SetupCommand implements CommandExecutor {
 	}
 
 	public static String[] missingLocs() {
-		File file = new File(Main.getInstance().getDataFolder() + "/" + SetupCommand.file);
+		File file = new File(Main.getInstance().getDataFolder() + "/" + Systems.setUpFile);
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 		List<String> res = new ArrayList<String>();
-		for (String loc : locs) {
+		for (String loc : Systems.locs) {
 			boolean contains = false;
 			for (String key : config.getKeys(false)) {
 				if (loc.equalsIgnoreCase(key)) {
