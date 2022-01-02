@@ -6,7 +6,7 @@ import eu.spectrum.main.Main;
 
 public enum Difficulty {
 
-	EASY("dfficulty.easy", ChatColor.GREEN, 13, 0), INTERMEDIATE("difficulty.intermediate", ChatColor.GOLD, 1, 1),
+	EASY("difficulty.easy", ChatColor.GREEN, 13, 0), INTERMEDIATE("difficulty.intermediate", ChatColor.GOLD, 1, 1),
 	HARD("difficulty.hard", ChatColor.RED, 14, 2), BEYOND_HARD("difficulty.beyond-hard", ChatColor.DARK_PURPLE, 10, 3);
 
 	String name;
