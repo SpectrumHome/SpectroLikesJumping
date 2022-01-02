@@ -173,8 +173,14 @@ public class CreateCommand implements CommandExecutor {
 								text.setHoverEvent(hoverEvent);
 								text.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module load " + module.name));
 
-								TextComponent delete = new TextComponent(" §7[§c§l🗑§7]");
-
+								TextComponent base = new TextComponent("  ");
+								
+								TextComponent delete = new TextComponent("§7[§c§l✘§7]");
+								delete.setClickEvent(new ClickEvent(Action.RUN_COMMAND,"/module delete " + module.name));
+								TextComponent hoverDelete = new TextComponent("§c" + module.name + " löschen");
+								delete.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[] {hoverDelete}));
+								
+								base.addExtra(delete);
 								// TODO: delete comp, filler comp with two spaces, inventory with 1 column and wool to
 								// accept(hashmap,listener)
 
@@ -184,8 +190,9 @@ public class CreateCommand implements CommandExecutor {
 								HoverEvent hoverEditEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 										new BaseComponent[] { hoverEdit });
 								edit.setHoverEvent(hoverEditEvent);
-								text.addExtra(edit);
-
+								base.addExtra(edit);
+								text.addExtra(base);
+								
 								p.spigot().sendMessage(text);
 
 								String restMessage = "       §r§7-> " + Main.handler.format("difficulty") + ": "
