@@ -2,29 +2,17 @@ package eu.spectrum.listeners;
 
 import java.util.HashMap;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.util.Vector;
 
-import eu.spectrum.commands.CreateCommand;
-import eu.spectrum.main.Main;
-import eu.spectrum.main.Systems;
-import eu.spectrum.utils.Difficulty;
 import eu.spectrum.utils.ModuleData;
-import eu.spectrum.utils.ModuleManager;
 
 public class CreationListener implements Listener {
 
@@ -44,88 +32,13 @@ public class CreationListener implements Listener {
 				boolean cam = ((SkullMeta) currentItem.getItemMeta()).getOwner().equalsIgnoreCase("MHF_cam");
 				if (((SkullMeta) currentItem.getItemMeta()).getOwner().equalsIgnoreCase("MHF_youtube") || cam) {
 					ModuleData data = creationMode.get(p);
-
-					try {
-
-						ItemStack namedItem = inv.getItem(9);
-						ItemStack originItem = inv.getItem(0);
-						boolean wasRenamed = namedItem != null && namedItem.getType() != Material.STAINED_GLASS_PANE;
-
-						if (wasRenamed) {
-							data.name = namedItem.getItemMeta().getDisplayName().trim();
-						}
-
-						if (wasRenamed && namedItem.getItemMeta() != null
-								&& ModuleManager.isModule(namedItem.getItemMeta().getDisplayName().trim())) {
-							inv.setItem(9, CreateCommand.paneFiller((byte) 14, Main.handler.format("name.exists")));
-							p.updateInventory();
-							return;
-						}
-						boolean editing = !originItem.getItemMeta().getDisplayName()
-								.equalsIgnoreCase(Systems.defModuleName);
-						if (editing || wasRenamed)
-							creationMode.remove(p);
-						if (editing) {
-							String oldModule = originItem.getItemMeta().getDisplayName().trim();
-							YamlConfiguration config = ModuleManager.getModuleConfig(oldModule);
-							config.set("name", data.name);
-							config.set("difficulty", data.difficulty.toString());
-							ModuleManager.saveModuleConfig(config, oldModule);
-
-							if (wasRenamed) {
-								ModuleManager.copyModule(oldModule, data.name);
-								ModuleManager.delete(oldModule);
-							}
-
-						} else if (wasRenamed) {
-							ModuleManager.registerModule(p, data);
-						} else {
-							inv.setItem(9, CreateCommand.paneFiller((byte) 14, Main.handler.format("name.missing")));
-							p.updateInventory();
-							return;
-						}
-
-						quitCreation(p, inv);
-						p.closeInventory();
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-					if (cam) {
-						Location start = p.getLocation().add(new Vector(3, 3, 3));
-						data.tmpStart = start;
-						ModuleManager.paste(start, data.name);
-						data.resetCheckpoints();
-						data.setAbsoluteLocations(start);
-						creationMode.put(p, data);
-						CreateCommand.step(p);
-					}
+					
 				}
 			} else {
-				byte b = (byte) currentItem.getDurability();
-				for (Difficulty d : Difficulty.values()) {
-					if (d.getSubColorID() == b) {
-						creationMode.get(p).difficulty = d;
-						Inventory pInv = p.getInventory();
-						CreateCommand.setDifficultyPart(d, pInv);
-						p.updateInventory();
-						break;
-					}
-				}
+				
 			}
 
 		}
-	}
-
-	public static void quitCreation(Player p, Inventory inv) {
-		inv.clear();
-		if (creationMode.containsKey(p)) {
-			creationMode.remove(p);
-			p.sendMessage(Main.handler.format("module.registration.canceled"));
-		} else {
-			p.sendMessage(Main.handler.format("module.registration.suceeded"));
-			p.playSound(p.getLocation(), Sound.LEVEL_UP, 1, 1);
-		}
-		// cache load
 	}
 
 	@EventHandler

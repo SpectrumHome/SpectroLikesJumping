@@ -2,6 +2,7 @@ package eu.spectrum.commands;
 
 import static eu.spectrum.listeners.CreationListener.creationMode;
 
+import java.awt.Point;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -10,6 +11,7 @@ import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -21,9 +23,9 @@ import eu.spectrum.utils.Difficulty;
 import eu.spectrum.utils.ModuleData;
 import eu.spectrum.utils.ModuleManager;
 import eu.spigotui.ui.SpigotUI;
+import eu.spigotui.ui.active.TextFieldInventory;
 import eu.spigotui.ui.components.UIButton;
 import eu.spigotui.ui.components.UIDisplayComponent;
-import eu.spigotui.ui.top.TextFieldInventory;
 import eu.spigotui.utils.ItemBuilder;
 import eu.spigotui.utils.UISection;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -264,12 +266,11 @@ public class CreateCommand implements CommandExecutor {
 	public static void openInv(Player p, boolean change) {
 		ModuleData data = creationMode.get(p);
 
-		ItemStack arrow = new ItemBuilder(Material.SKULL_ITEM).setOwner("MHF_ArrowRight")
-				.setName("§c§l" + Main.handler.format("difficulties")).build();
-		ItemStack tickbox = new ItemBuilder(Material.SKULL_ITEM).setOwner("MHF_youtube")
-				.setName("§a§l" + Main.handler.format("complete")).build();
-		ItemStack changeBuild = new ItemBuilder(Material.SKULL_ITEM).setOwner("MHF_cam")
-				.setName("§a§l" + Main.handler.format("construct.change")).build();
+		ItemStack tickbox = ItemBuilder.skull("MHF_youtube").setName("§a§l" + Main.handler.format("complete")).build();
+		ItemStack arrow = ItemBuilder.skull("MHF_ArrowRight").setName("§c§l" + Main.handler.format("difficulties"))
+				.build();
+		ItemStack changeBuild = ItemBuilder.skull("MHF_cam").setName("§a§l" + Main.handler.format("construct.change"))
+				.build();
 
 		SpigotUI ui = new SpigotUI(p);
 		TextFieldInventory field = new TextFieldInventory(data.name == null ? Systems.defModuleName : data.name);
@@ -279,12 +280,19 @@ public class CreateCommand implements CommandExecutor {
 
 		ui.addComponent(UISection.BOTTOM, 2, 1, new UIDisplayComponent(arrow));
 		ui.addComponent(UISection.BOTTOM, change ? 3 : 4, 3, new UIButton(tickbox).setOnClick((action) -> {
-
+			confirmChange(field, data);
 		}));
 
 		if (change) {
 			ui.addComponent(UISection.BOTTOM, 5, 3, new UIButton(changeBuild).setOnClick((action) -> {
-
+				confirmChange(field, data);
+				Location start = p.getLocation().add(new org.bukkit.util.Vector(3, 3, 3));
+				data.tmpStart = start;
+				ModuleManager.paste(start, data.name);
+				data.resetCheckpoints();
+				data.setAbsoluteLocations(start);
+				creationMode.put(p, data);
+				CreateCommand.step(p);
 			}));
 		}
 
@@ -295,18 +303,75 @@ public class CreateCommand implements CommandExecutor {
 
 			if (d == data.difficulty)
 				ui.addComponent(UISection.BOTTOM, count + 3, 0, new UIDisplayComponent(
-						ItemBuilder.paneFiller(d.getSubColorID(), d.getChatColor() + d.getName()),1,3));
-			
-			
+						ItemBuilder.paneFiller(d.getSubColorID(), d.getChatColor() + d.getName()), 1, 3));
 
-			ui.addComponent(UISection.BOTTOM,count+ 3, 1, new UIButton(dif).setOnClick((action) -> {
+			ui.addComponent(UISection.BOTTOM, count + 3, 1, new UIButton(dif).setOnClick((action) -> {
+				int pos = ui.removeComponent(ui.getComponentAt(new Point(data.difficulty.getDifficulty() + 3, 0)));
+				// pos is -1
+				data.difficulty = d;
+				ui.insertComponent(pos, UISection.BOTTOM, data.difficulty.getDifficulty() + 3, 0, new UIDisplayComponent(
+						ItemBuilder.paneFiller(d.getSubColorID(), d.getChatColor() + d.getName()), 1, 3));
+				ui.repaintBottom();
 
 			}));
 			count++;
 
 		}
 		
+		ui.setActionOnClose(()->quitCreation(field.getPlayer()));
 		ui.openInventory();
+	}
+
+	public static void confirmChange(TextFieldInventory field, ModuleData data) {
+		try {
+
+			String changedName = field.getValue();
+			String originalName = field.getDefValue();
+			boolean wasRenamed = field.valueChanged();
+
+			if (wasRenamed) {
+				data.name = changedName;
+			}
+
+			if (wasRenamed && ModuleManager.isModule(changedName)) {
+				field.displayError(Main.handler.format("name.exists"));
+				return;
+			}
+			boolean editing = !originalName.equalsIgnoreCase(Systems.defModuleName);
+			if (editing || wasRenamed)
+				creationMode.remove(field.getPlayer());
+			if (editing) {
+				YamlConfiguration config = ModuleManager.getModuleConfig(originalName);
+				config.set("name", data.name);
+				config.set("difficulty", data.difficulty.toString());
+				ModuleManager.saveModuleConfig(config, originalName);
+
+				if (wasRenamed) {
+					ModuleManager.copyModule(originalName, data.name);
+					ModuleManager.delete(originalName);
+				}
+
+			} else if (wasRenamed) {
+				ModuleManager.registerModule(field.getPlayer(), data);
+			} else {
+				field.displayError(Main.handler.format("name.missing"));
+				return;
+			}
+
+			field.getUi().close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	public static void quitCreation(Player p) {
+		if (creationMode.containsKey(p)) {
+			creationMode.remove(p);
+			p.sendMessage(Main.handler.format("module.registration.canceled"));
+		} else {
+			p.sendMessage(Main.handler.format("module.registration.suceeded"));
+			p.playSound(p.getLocation(), Sound.LEVEL_UP, 1, 1);
+		}
 	}
 
 	public static void printCreationStatus(Player p) {
