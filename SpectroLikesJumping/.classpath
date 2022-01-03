@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="libs/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar"/>
 	<classpathentry kind="lib" path="libs/worldedit-bukkit-6.1.7.3.jar"/>
 	<classpathentry kind="lib" path="libs/Language_API.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpigotUI"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -2,23 +2,16 @@ package eu.spectrum.commands;
 
 import static eu.spectrum.listeners.CreationListener.creationMode;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.SkullType;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import com.sk89q.worldedit.Vector;
 
@@ -27,17 +20,17 @@ import eu.spectrum.main.Systems;
 import eu.spectrum.utils.Difficulty;
 import eu.spectrum.utils.ModuleData;
 import eu.spectrum.utils.ModuleManager;
+import eu.spigotui.ui.SpigotUI;
+import eu.spigotui.ui.components.UIButton;
+import eu.spigotui.ui.components.UIDisplayComponent;
+import eu.spigotui.ui.top.TextFieldInventory;
+import eu.spigotui.utils.ItemBuilder;
+import eu.spigotui.utils.UISection;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.ChatMessage;
-import net.minecraft.server.v1_8_R3.ContainerAnvil;
-import net.minecraft.server.v1_8_R3.EntityHuman;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
-import net.minecraft.server.v1_8_R3.PacketPlayOutOpenWindow;
 
 @SuppressWarnings("deprecation")
 public class CreateCommand implements CommandExecutor {
@@ -173,9 +166,18 @@ public class CreateCommand implements CommandExecutor {
 								text.setHoverEvent(hoverEvent);
 								text.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module load " + module.name));
 
-								TextComponent delete = new TextComponent(" §7[§c§l🗑§7]");
+								TextComponent base = new TextComponent("  ");
 
-								// TODO: delete comp, filler comp with two spaces, inventory with 1 column and wool to
+								TextComponent delete = new TextComponent("§7[§c§l✘§7]");
+								delete.setClickEvent(
+										new ClickEvent(Action.RUN_COMMAND, "/module delete " + module.name));
+								TextComponent hoverDelete = new TextComponent("§c" + module.name + " löschen");
+								delete.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+										new BaseComponent[] { hoverDelete }));
+
+								base.addExtra(delete);
+								// TODO: delete comp, filler comp with two spaces, inventory with 1 column and
+								// wool to
 								// accept(hashmap,listener)
 
 								TextComponent edit = new TextComponent(" §7[§a§l✎§7]");
@@ -184,7 +186,8 @@ public class CreateCommand implements CommandExecutor {
 								HoverEvent hoverEditEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 										new BaseComponent[] { hoverEdit });
 								edit.setHoverEvent(hoverEditEvent);
-								text.addExtra(edit);
+								base.addExtra(edit);
+								text.addExtra(base);
 
 								p.spigot().sendMessage(text);
 
@@ -244,20 +247,6 @@ public class CreateCommand implements CommandExecutor {
 		return str;
 	}
 
-	public static final class FakeAnvil extends ContainerAnvil {
-
-		public FakeAnvil(EntityHuman entityHuman) {
-			super(entityHuman.inventory, entityHuman.world, new BlockPosition(0, 0, 0), entityHuman);
-		}
-
-		@Override
-		public boolean a(EntityHuman entityHuman) {
-			return true;
-		}
-	}
-
-	public static Map<Player, Map<Integer, ItemStack>> itemCache = new HashMap<>();
-
 	public static void step(Player p) {
 		p.playSound(p.getLocation(), Sound.ANVIL_BREAK, 1, 1);
 		printCreationStatus(p);
@@ -273,101 +262,51 @@ public class CreateCommand implements CommandExecutor {
 	}
 
 	public static void openInv(Player p, boolean change) {
-
 		ModuleData data = creationMode.get(p);
 
-		EntityPlayer entityPlayer = ((CraftPlayer) p).getHandle();
-		FakeAnvil fakeAnvil = new FakeAnvil(entityPlayer);
-		int containerId = entityPlayer.nextContainerCounter();
+		ItemStack arrow = new ItemBuilder(Material.SKULL_ITEM).setOwner("MHF_ArrowRight")
+				.setName("§c§l" + Main.handler.format("difficulties")).build();
+		ItemStack tickbox = new ItemBuilder(Material.SKULL_ITEM).setOwner("MHF_youtube")
+				.setName("§a§l" + Main.handler.format("complete")).build();
+		ItemStack changeBuild = new ItemBuilder(Material.SKULL_ITEM).setOwner("MHF_cam")
+				.setName("§a§l" + Main.handler.format("construct.change")).build();
 
-		((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutOpenWindow(containerId,
-				"minecraft:anvil", new ChatMessage(Main.handler.format("module.info"), new Object[] {}), 0));
+		SpigotUI ui = new SpigotUI(p);
+		TextFieldInventory field = new TextFieldInventory(data.name == null ? Systems.defModuleName : data.name);
+		ui.setActiveInventory(field);
 
-		entityPlayer.activeContainer = fakeAnvil;
-		entityPlayer.activeContainer.windowId = containerId;
-		entityPlayer.activeContainer.addSlotListener(entityPlayer);
-		entityPlayer.activeContainer = fakeAnvil;
-		entityPlayer.activeContainer.windowId = containerId;
+		ui.addComponent(UISection.BOTTOM, 0, 0, new UIDisplayComponent(ItemBuilder.paneFiller(7, "§8-"), 9, 4));
 
-		Inventory inv = fakeAnvil.getBukkitView().getTopInventory();
-		ItemStack paper = new ItemStack(Material.PAPER);
-		ItemMeta meta = paper.getItemMeta();
-		meta.setDisplayName(data.name == null ? Systems.defModuleName : data.name);
-		paper.setItemMeta(meta);
-		inv.setItem(0, paper);
+		ui.addComponent(UISection.BOTTOM, 2, 1, new UIDisplayComponent(arrow));
+		ui.addComponent(UISection.BOTTOM, change ? 3 : 4, 3, new UIButton(tickbox).setOnClick((action) -> {
 
-		HashMap<Integer, ItemStack> cache = new HashMap<>();
-
-		Inventory playerInv = p.getInventory();
-		for (int i = 0; i < playerInv.getSize(); i++) {
-			ItemStack stack = playerInv.getItem(i);
-			cache.put(i, stack);
-		}
-		itemCache.put(p, cache);
-		playerInv.clear();
-
-		ItemStack arrow = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
-		SkullMeta skullMeta = (SkullMeta) arrow.getItemMeta();
-		skullMeta.setOwner("MHF_ArrowRight");
-		skullMeta.setDisplayName("§c§l" + Main.handler.format("difficulties"));
-		arrow.setItemMeta(skullMeta);
-
-		playerInv.setItem(20, arrow);
-
-		ItemStack tickbox = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
-		SkullMeta tickMeta = (SkullMeta) tickbox.getItemMeta();
-		tickMeta.setOwner("MHF_youtube");
-		tickMeta.setDisplayName("§a§l" + Main.handler.format("complete"));
-		tickbox.setItemMeta(tickMeta);
-
-		playerInv.setItem(change ? 3 : 4, tickbox);
+		}));
 
 		if (change) {
-			ItemStack changeBuild = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
-			SkullMeta buildMeta = (SkullMeta) changeBuild.getItemMeta();
-			buildMeta.setOwner("MHF_cam");
-			buildMeta.setDisplayName(Main.handler.format("construct.change"));
-			changeBuild.setItemMeta(buildMeta);
+			ui.addComponent(UISection.BOTTOM, 5, 3, new UIButton(changeBuild).setOnClick((action) -> {
 
-			playerInv.setItem(5, changeBuild);
+			}));
 		}
 
-		setDifficultyPart(data.difficulty, playerInv);
-
-	}
-
-	public static void setDifficultyPart(Difficulty difficulty, Inventory playerInv) {
-
-		for (int i = 0; i < playerInv.getSize(); i++) {
-			if (playerInv.getItem(i) == null || playerInv.getItem(i).getType() == Material.STAINED_GLASS_PANE) {
-				playerInv.setItem(i, paneFiller((byte) 7, "§8-"));
-			}
-		}
-
-		int count = 21;
+		int count = 0;
 		for (Difficulty d : Difficulty.values()) {
-			ItemStack wool = new ItemStack(Material.WOOL, 1, (byte) d.getSubColorID());
+			ItemStack dif = new ItemBuilder(Material.WOOL).setDamage(d.getSubColorID())
+					.setName(d.getChatColor() + d.getName()).build();
 
-			ItemMeta woolMeta = wool.getItemMeta();
-			woolMeta.setDisplayName(d.getChatColor() + d.getName());
-			wool.setItemMeta(woolMeta);
+			if (d == data.difficulty)
+				ui.addComponent(UISection.BOTTOM, count + 3, 0, new UIDisplayComponent(
+						ItemBuilder.paneFiller(d.getSubColorID(), d.getChatColor() + d.getName()),1,3));
+			
+			
 
-			playerInv.setItem(count, wool);
+			ui.addComponent(UISection.BOTTOM,count+ 3, 1, new UIButton(dif).setOnClick((action) -> {
 
-			if (d == difficulty) {
-				playerInv.setItem(count - 9, paneFiller((byte) d.getSubColorID(), "§8-"));
-				playerInv.setItem(count + 9, paneFiller((byte) d.getSubColorID(), "§8-"));
-			}
+			}));
 			count++;
-		}
-	}
 
-	public static ItemStack paneFiller(byte color, String name) {
-		ItemStack pane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) color);
-		ItemMeta meta = pane.getItemMeta();
-		meta.setDisplayName(name);
-		pane.setItemMeta(meta);
-		return pane;
+		}
+		
+		ui.openInventory();
 	}
 
 	public static void printCreationStatus(Player p) {

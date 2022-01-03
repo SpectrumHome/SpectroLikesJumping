@@ -51,7 +51,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("start").setExecutor(new StartCommand());
 
 		PluginManager manager = Bukkit.getPluginManager();
-		manager.registerEvents(new CreationListener(), this);
+//		manager.registerEvents(new CreationListener(), this);
 		manager.registerEvents(new ConnectionListener(), this);
 		manager.registerEvents(new SecurityListener(), this);
 		manager.registerEvents(new GameListener(), this);
