@@ -32,12 +32,14 @@ public class CreationListener implements Listener {
 
 	@EventHandler
 	public void onAnvilInv(InventoryClickEvent e) {
+		
 		Player p = (Player) e.getWhoClicked();
 		Inventory inv = e.getInventory();
 		if (inv.getType() == InventoryType.ANVIL && creationMode.containsKey(p)) {
 			e.setCancelled(true);
 
 			ItemStack currentItem = e.getCurrentItem();
+			
 			if (currentItem.getItemMeta() instanceof SkullMeta) {
 				boolean cam = ((SkullMeta) currentItem.getItemMeta()).getOwner().equalsIgnoreCase("MHF_cam");
 				if (((SkullMeta) currentItem.getItemMeta()).getOwner().equalsIgnoreCase("MHF_youtube") || cam) {
@@ -114,15 +116,6 @@ public class CreationListener implements Listener {
 		}
 	}
 
-	@EventHandler
-	public void onInteract(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
-		if (creationMode.containsKey(p) && e.getAction() == Action.PHYSICAL
-				&& p.getLocation().getBlock().getType() == Material.GOLD_PLATE) {
-			e.setCancelled(true);
-		}
-	}
-
 	public static void quitCreation(Player p, Inventory inv) {
 		inv.clear();
 		if (creationMode.containsKey(p)) {
@@ -132,14 +125,7 @@ public class CreationListener implements Listener {
 			p.sendMessage(Main.handler.format("module.registration.suceeded"));
 			p.playSound(p.getLocation(), Sound.LEVEL_UP, 1, 1);
 		}
-		p.getInventory().clear();
-		if (CreateCommand.itemCache.containsKey(p)) {
-			for (int i : CreateCommand.itemCache.get(p).keySet()) {
-				p.getInventory().setItem(i, CreateCommand.itemCache.get(p).get(i));
-			}
-			CreateCommand.itemCache.remove(p);
-			p.updateInventory();
-		}
+		// cache load
 	}
 
 	@EventHandler

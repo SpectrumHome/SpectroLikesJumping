@@ -2,17 +2,20 @@ package eu.spectrum.listeners;
 
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
@@ -40,6 +43,15 @@ public class SecurityListener implements Listener {
 			if (p.getGameMode() == GameMode.SURVIVAL) {
 				actionForGameState(() -> e.setCancelled(true), true, GameState.PVP);
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onInteract(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		if (CreationListener.creationMode.containsKey(p) && e.getAction() == Action.PHYSICAL
+				&& p.getLocation().getBlock().getType() == Material.GOLD_PLATE) {
+			e.setCancelled(true);
 		}
 	}
 	
