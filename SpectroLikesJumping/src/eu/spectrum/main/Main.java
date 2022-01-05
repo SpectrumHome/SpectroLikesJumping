@@ -23,13 +23,12 @@ import eu.spectrum.commands.SetupCommand;
 import eu.spectrum.commands.StartCommand;
 import eu.spectrum.lang.LanguageHandler;
 import eu.spectrum.listeners.ConnectionListener;
-import eu.spectrum.listeners.CreationListener;
 import eu.spectrum.listeners.GameListener;
 import eu.spectrum.listeners.SecurityListener;
 
 public class Main extends JavaPlugin {
 
-	public static final String PREFIX = "§6SpectroLikesJumping §7-> ";
+	public static final String PREFIX = "ï¿½6SpectroLikesJumping ï¿½7-> ";
 
 	private static Main instance;
 
