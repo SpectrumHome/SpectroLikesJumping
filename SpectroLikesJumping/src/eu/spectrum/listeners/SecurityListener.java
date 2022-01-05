@@ -22,6 +22,7 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import eu.spectrum.commands.CreateCommand;
 import eu.spectrum.game.GameHandler;
 import eu.spectrum.game.GameState;
+import eu.spectrum.main.Systems;
 
 public class SecurityListener implements Listener {
 
@@ -46,16 +47,15 @@ public class SecurityListener implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		if (CreateCommand.creationMode.containsKey(p) && e.getAction() == Action.PHYSICAL
-				&& p.getLocation().getBlock().getType() == Material.GOLD_PLATE) {
+				&& p.getLocation().getBlock().getType() == Systems.checkpoint[0]) {
 			e.setCancelled(true);
 		}
 	}
-	
 
 	@EventHandler
 	public void onHunger(FoodLevelChangeEvent e) {
