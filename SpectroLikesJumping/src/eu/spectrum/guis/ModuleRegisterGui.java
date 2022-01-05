@@ -1,7 +1,5 @@
 package eu.spectrum.guis;
 
-import static eu.spectrum.listeners.CreationListener.creationMode;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -36,9 +34,10 @@ public class ModuleRegisterGui extends SpigotUI {
 	@Override
 	public void initComponents() {
 		Player p = getPlayer();
-		ModuleData data = creationMode.get(p);
+		ModuleData data = CreateCommand.creationMode.get(p);
 
-		ItemStack tickbox = ItemBuilder.skull("MHF_youtube").setName("§a§l" + Main.handler.format("complete")).build();
+		ItemStack tickbox = ItemBuilder.skull("MHF_youtube").setName("§a§l" + Main.handler.format("complete"))
+				.build();
 		ItemStack arrow = ItemBuilder.skull("MHF_ArrowRight").setName("§c§l" + Main.handler.format("difficulties"))
 				.build();
 		ItemStack changeBuild = ItemBuilder.skull("MHF_cam").setName("§a§l" + Main.handler.format("construct.change"))
@@ -62,7 +61,7 @@ public class ModuleRegisterGui extends SpigotUI {
 				ModuleManager.paste(start, data.name);
 				data.resetCheckpoints();
 				data.setAbsoluteLocations(start);
-				creationMode.put(p, data);
+				CreateCommand.creationMode.put(p, data);
 				CreateCommand.step(p);
 			}).setPos(5, 3));
 		}
@@ -89,14 +88,19 @@ public class ModuleRegisterGui extends SpigotUI {
 
 		setActionOnClose(() -> quitCreation(field.getPlayer()));
 	}
-	
+
 	public void confirmChange(TextFieldInventory field, ModuleData data) {
 		try {
 
 			String changedName = field.getValue();
+			
+			System.out.println("CHANGED TO: " + changedName);
+			
 			String originalName = field.getDefValue();
 			boolean wasRenamed = field.valueChanged();
 
+			System.out.println("ORIGINAL NAME: " + originalName);
+			
 			if (wasRenamed) {
 				data.name = changedName;
 			}
@@ -107,7 +111,7 @@ public class ModuleRegisterGui extends SpigotUI {
 			}
 			boolean editing = !originalName.equalsIgnoreCase(Systems.defModuleName);
 			if (editing || wasRenamed)
-				creationMode.remove(field.getPlayer());
+				CreateCommand.creationMode.remove(field.getPlayer());
 			if (editing) {
 				YamlConfiguration config = ModuleManager.getModuleConfig(originalName);
 				config.set("name", data.name);
@@ -120,7 +124,10 @@ public class ModuleRegisterGui extends SpigotUI {
 				}
 
 			} else if (wasRenamed) {
-				ModuleManager.registerModule(field.getPlayer(), data);
+				if (!ModuleManager.registerModule(field.getPlayer(), data)) {
+					field.displayError(Main.handler.format("name.invalid"));
+					return;
+				}
 			} else {
 				field.displayError(Main.handler.format("name.missing"));
 				return;
@@ -131,17 +138,17 @@ public class ModuleRegisterGui extends SpigotUI {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void quitCreation(Player p) {
-		if (creationMode.containsKey(p)) {
-			creationMode.remove(p);
+		if (CreateCommand.creationMode.containsKey(p)) {
+			CreateCommand.creationMode.remove(p);
 			p.sendMessage(Main.handler.format("module.registration.canceled"));
 		} else {
 			p.sendMessage(Main.handler.format("module.registration.suceeded"));
 			p.playSound(p.getLocation(), Sound.LEVEL_UP, 1, 1);
 		}
 	}
-	
+
 	private ItemStack getDifficultyPane(Difficulty current) {
 		return ItemBuilder.paneFiller(current.getSubColorID(), current.getChatColor() + current.getName());
 	}

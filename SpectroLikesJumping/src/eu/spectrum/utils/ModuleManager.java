@@ -35,6 +35,9 @@ import eu.spectrum.main.Main;
 @SuppressWarnings("deprecation")
 public class ModuleManager {
 
+	private static final char[] ILLEGAL_CHARACTERS = { '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>',
+			'|', '\"', ':' };
+
 	public static void saveSchematic(Player player, Location loc1, Location loc2, Location startLoc, String name) {
 		try {
 			File schematic = new File(moduleFolder(name) + "/construct.schematic");
@@ -125,25 +128,36 @@ public class ModuleManager {
 		return null;
 	}
 
-	public static void registerModule(Player p, ModuleData data) {
+	public static boolean registerModule(Player p, ModuleData data) {
+		if (!checkValidity(data.name))
+			return false;
 		Location min = data.getLoc1().getBlockY() <= data.getLoc2().getBlockY() ? data.loc1 : data.loc2;
 		Location max = data.getLoc1().getBlockY() > data.getLoc2().getBlockY() ? data.loc1 : data.loc2;
 
 		YamlConfiguration info = getModuleConfig(data.name);
 		info.set("name", data.name);
 		info.set("difficulty", data.difficulty.toString());
-		
+
 		World world = data.getStart().getWorld();
 		float yaw = data.getStart().getYaw();
 		float pitch = data.getStart().getPitch();
-		
-		info.set("start", data.getStart().toVector().subtract(min.toVector()).toLocation(world,yaw,pitch));
-		info.set("end", data.getEnd().toVector().subtract(min.toVector()).toLocation(world,yaw,pitch));
+
+		info.set("start", data.getStart().toVector().subtract(min.toVector()).toLocation(world, yaw, pitch));
+		info.set("end", data.getEnd().toVector().subtract(min.toVector()).toLocation(world, yaw, pitch));
 		saveModuleConfig(info, data.name);
 
 		p.teleport(data.getStart());
 		ModuleManager.saveSchematic(p, min, max, data.getStart(), data.name);
 		VectorUtils.fillWith(min, max, Material.AIR);
+		return true;
+	}
+
+	public static boolean checkValidity(String s) {
+		for (char c : ILLEGAL_CHARACTERS) {
+			if (s.contains(c + ""))
+				return false;
+		}
+		return true;
 	}
 
 	public static boolean copyModule(String originModule, String newModule) {
@@ -189,11 +203,15 @@ public class ModuleManager {
 		List<ModuleData> modules = new ArrayList<ModuleData>();
 		for (File f : dir.listFiles(File::isDirectory)) {
 			if (f.exists()) {
-				modules.add(ModuleData.getFromFile(f.toString()));
+				try {
+					modules.add(ModuleData.getFromFile(f.toString()));
+				} catch (Exception ex) {
+				}
 			}
 		}
 		modules.sort((m1, m2) -> m1.difficulty.getDifficulty() - m2.difficulty.getDifficulty());
 		return modules;
+
 	}
 
 	public static Vector getSize(List<ModuleData> datata) {
