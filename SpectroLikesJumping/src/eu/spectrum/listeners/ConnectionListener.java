@@ -21,7 +21,7 @@ public class ConnectionListener implements Listener {
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		e.setJoinMessage(Main.handler.format("game.player.joined", p.getName()));
-		p.teleport(SetupCommand.getLocation("waiting_lobby"));
+		p.teleport(SetupCommand.getLocation("waiting_lobby")); 
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), ()->{
 			GameHandler.checkCountdownState(null);
 		},20);
