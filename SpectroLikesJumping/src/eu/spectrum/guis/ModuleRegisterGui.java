@@ -22,12 +22,10 @@ import eu.spigotui.utils.UISection;
 
 public class ModuleRegisterGui extends SpigotUI {
 
-	ModuleData data;
 	boolean change;
 
-	public ModuleRegisterGui(Player p, ModuleData data, boolean change) {
+	public ModuleRegisterGui(Player p, boolean change) {
 		super(p);
-		this.data = data;
 		this.change = change;
 	}
 
@@ -63,7 +61,7 @@ public class ModuleRegisterGui extends SpigotUI {
 				data.setAbsoluteLocations(start);
 				CreateCommand.creationMode.put(p, data);
 				CreateCommand.step(p);
-			}).setPos(5, 3));
+			}).setPos(5, 3, 1));
 		}
 
 		int count = 0;
@@ -109,10 +107,10 @@ public class ModuleRegisterGui extends SpigotUI {
 				field.displayError(Main.handler.format("name.exists"));
 				return;
 			}
-			boolean editing = !originalName.equalsIgnoreCase(Systems.defModuleName);
-			if (editing || wasRenamed)
+			if (change || wasRenamed)
 				CreateCommand.creationMode.remove(field.getPlayer());
-			if (editing) {
+			
+			if (change) {
 				YamlConfiguration config = ModuleManager.getModuleConfig(originalName);
 				config.set("name", data.name);
 				config.set("difficulty", data.difficulty.toString());
