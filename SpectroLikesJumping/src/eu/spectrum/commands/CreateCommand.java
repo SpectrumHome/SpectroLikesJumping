@@ -1,7 +1,6 @@
 package eu.spectrum.commands;
 
-import static eu.spectrum.listeners.CreationListener.creationMode;
-
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -29,6 +28,8 @@ public class CreateCommand implements CommandExecutor {
 
 	public static final String setCommand = "/module set";
 	public static final String removeCommand = "/module reset";
+	
+	public static HashMap<Player, ModuleData> creationMode = new HashMap<Player, ModuleData>();
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String name, String[] args) {
