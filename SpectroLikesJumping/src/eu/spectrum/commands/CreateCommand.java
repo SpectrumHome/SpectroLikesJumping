@@ -220,7 +220,7 @@ public class CreateCommand implements CommandExecutor {
 					String modName = assembleArg(1, args);
 					if (ModuleManager.isModule(modName)) {
 						creationMode.put(p, ModuleManager.getModule(modName));
-						new ModuleRegisterGui(p, creationMode.get(p), true).openInventory();
+						new ModuleRegisterGui(p, true).openInventory();
 
 					} else {
 						p.sendMessage(Main.PREFIX + Main.handler.format("module.absent"));
@@ -246,7 +246,7 @@ public class CreateCommand implements CommandExecutor {
 		ModuleData data = creationMode.get(p);
 		if (data.getEnd() != null && data.getStart() != null && data.getLoc1() != null && data.getLoc2() != null) {
 			if (data.name == null) {
-				new ModuleRegisterGui(p, creationMode.get(p), false).openInventory();
+				new ModuleRegisterGui(p, false).openInventory();
 			} else {
 				ModuleManager.registerModule(p, data);
 				p.sendMessage(Main.PREFIX + Main.handler.format("construct.apply-changes"));

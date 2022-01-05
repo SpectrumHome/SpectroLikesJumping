@@ -2,7 +2,6 @@ package eu.spectrum.listeners;
 
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
