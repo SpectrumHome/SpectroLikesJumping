@@ -11,15 +11,19 @@ public class StartCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			if(args.length >= 1 && args[0].equalsIgnoreCase("now")) {
+			if (args.length >= 1 && args[0].equalsIgnoreCase("now")) {
 				GameHandler.startGame(p);
 			} else {
-				GameHandler.startCountdown(p);
+				if (GameHandler.startCountdown) {
+					GameHandler.startGame(p);
+				} else {
+					GameHandler.startCountdown(p);
+				}
 			}
 		}
-		
+
 		return false;
 	}
 

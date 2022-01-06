@@ -4,6 +4,8 @@ import org.bukkit.Location;
 
 import com.sk89q.worldedit.Vector;
 import static eu.spectrum.utils.VectorUtils.*;
+
+import eu.spectrum.main.Systems;
 import eu.spectrum.utils.ModuleData;
 
 public class PlayerData {
@@ -12,10 +14,12 @@ public class PlayerData {
 	Location start;
 	Location end;
 	public int minHeight;
+	public int lifes;
 
 	public PlayerData(Location start) {
 		currentModule = -1;
 		this.start = start;
+		lifes = Systems.MAX_LIFES;
 	}
 	
 	public void setStart(Location start) {
@@ -34,6 +38,23 @@ public class PlayerData {
 	
 	public void setEnd(Location end) {
 		this.end = end;
+	}
+	
+	public int getLifes() {
+		return lifes;
+	}
+	
+	public boolean playerDied() {
+		if(lifes > 1) {
+			lifes--;
+		}
+		if(lifes <= 0)
+			return false;
+		return true;
+	}
+	
+	public boolean lives() {
+		return lifes > 0;
 	}
 	
 	@SuppressWarnings("deprecation")
