@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
@@ -13,6 +14,8 @@ import eu.spectrum.game.GameState;
 import eu.spectrum.game.PlayerData;
 import eu.spectrum.main.Main;
 import eu.spectrum.main.Systems;
+
+import static eu.spectrum.game.GameHandler.*;
 
 public class GameListener implements Listener {
 
@@ -30,6 +33,20 @@ public class GameListener implements Listener {
 						GameHandler.spawnNextModule(p);
 					}
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onDeath(PlayerDeathEvent e) {
+		Player p = e.getEntity();
+		if(playerData.containsKey(p) && gameState == GameState.PVP) {
+			PlayerData data = playerData.get(p);
+			boolean lives = data.playerDied();
+			if(lives) {
+				//respawn
+			} else {
+				//spectator
 			}
 		}
 	}
