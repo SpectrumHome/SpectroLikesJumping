@@ -36,6 +36,10 @@ game.world.loading=&cDie Welt lädt noch.
 game.player.joined=&a➡%0 &7hat das Spiel betreten.
 game.player.left=&c⬅%0 &7hat das Spiel verlassen.
 game.reached-goal=&aYay das ist das Ziel!
+game.skipped.local=&aDu hast den Countdown übersprungen!
+game.skipped.failed=&cHier gibt es nichts zum Überspringen!
+game.skipped.global=&a%0 hat die Zeit verkürzt!
+
 
 difficulty.easy=Zu einfach bitch
 difficulty.intermediate=Bisl bessa
