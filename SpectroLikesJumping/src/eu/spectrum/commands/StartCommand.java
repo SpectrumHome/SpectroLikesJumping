@@ -16,7 +16,7 @@ public class StartCommand implements CommandExecutor {
 			if(args.length >= 1 && args[0].equalsIgnoreCase("now")) {
 				GameHandler.startGame(p);
 			} else {
-				GameHandler.startGameTimer(p);
+				GameHandler.startCountdown(p);
 			}
 		}
 		

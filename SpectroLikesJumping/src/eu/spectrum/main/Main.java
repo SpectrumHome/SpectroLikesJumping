@@ -20,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import eu.spectrum.commands.CreateCommand;
 import eu.spectrum.commands.SetupCommand;
+import eu.spectrum.commands.SkipCommand;
 import eu.spectrum.commands.StartCommand;
 import eu.spectrum.lang.LanguageHandler;
 import eu.spectrum.listeners.ConnectionListener;
@@ -48,6 +49,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("module").setExecutor(new CreateCommand());
 		this.getCommand("setup").setExecutor(new SetupCommand());
 		this.getCommand("start").setExecutor(new StartCommand());
+		this.getCommand("skip").setExecutor(new SkipCommand());
 
 		PluginManager manager = Bukkit.getPluginManager();
 //		manager.registerEvents(new CreationListener(), this);

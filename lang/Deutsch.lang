@@ -1,36 +1,39 @@
-cmd.create.desc=§7Benutze §a/module <load NAME, add, loc>
-cmd.create.start=§7Setze dich nun auf den §a§lAnfangspunkt des Moduls§7!
-cmd.create.leave=§7Du hast den Registrierungsprozess §c§lverlassen§7!;
-cmd.create.all-set=§cDu hast schon alle Felder gesetzt.
-cmd.create.plate-missing=§cFür dieses Feld musst du auf einer Druckplatte stehen.
-cmd.create.use-number=§cEy benutz doch ne Zahl pls.
-cmd.create.cancel-registration=§4Registrierung abbrechen
-cmd.create.reset-registration=§cRegistrierung zurücksetzen
+cmd.create.desc=&7Benutze &a/module <load NAME, add, loc>
+cmd.create.start=&7Setze dich nun auf den &a&lAnfangspunkt des Moduls&7!
+cmd.create.leave=&7Du hast den Registrierungsprozess &c&lverlassen&7!;
+cmd.create.all-set=&cDu hast schon alle Felder gesetzt.
+cmd.create.plate-missing=&cFür dieses Feld musst du auf einer Druckplatte stehen.
+cmd.create.use-number=&cEy benutz doch ne Zahl pls.
+cmd.create.cancel-registration=&4Registrierung abbrechen
+cmd.create.reset-registration=&cRegistrierung zurücksetzen
 
-cmd.setup.list=§7Locations= §a %0
-cmd.setup.all-set=§aDu hast schon alle Locations gesetzt uwu
-cmd.setup.missing-locs=§7Es fehlt noch= §a/setup <%0>
-cmd.setup.set-loc=§7Du hast §a%0 §7gesetzt.
+cmd.setup.list=&7Locations= &a %0
+cmd.setup.all-set=&aDu hast schon alle Locations gesetzt uwu
+cmd.setup.missing-locs=&7Es fehlt noch= &a/setup <%0>
+cmd.setup.set-loc=&7Du hast &a%0 &7gesetzt.
 
-module.add=§aFüge ein Modul mit \"/module add\" hinzu!
-module.absent=§cDieses Modul existiert nicht!
-module.name-missing=§cGib ein Modul an du kek.
-module.delete.succeeded=§7Modul wurde §agelöscht
-module.delete.failed=§7Modul wurde §cnicht gelöscht
-module.edit=§aModul bearbeiten
-module.same-location=§cDen gleichen Ort besitzt das Modul schons.
+module.add=&aFüge ein Modul mit \"/module add\" hinzu!
+module.absent=&cDieses Modul existiert nicht!
+module.name-missing=&cGib ein Modul an du kek.
+module.delete.succeeded=&7Modul wurde &agelöscht
+module.delete.failed=&7Modul wurde &cnicht gelöscht
+module.edit=&aModul bearbeiten
+module.same-location=&cDen gleichen Ort besitzt das Modul schons.
 module.spawn=%0 spawnen
 module.info=Modul-Info
-module.registration.canceled=§cDu hast die Registrierung abgebrochen.
-module.registration.suceeded=\n \n§a§lDas Modul wurde fragmentiert uwu\n \n
+module.registration.canceled=&cDu hast die Registrierung abgebrochen.
+module.registration.suceeded=\n \n&a&lDas Modul wurde fragmentiert uwu\n \n
 
-game.running=§cDas Spiel läuft bereits.
-game.full=§cDas Spiel ist voll.
-game.countdown.absent=§cEs läuft kein Countdown.
-game.world.loading=§cDie Welt lädt noch.
-game.player.joined=§a➡%0 §7hat das Spiel betreten.
-game.player.left=§c⬅%0 §7hat das Spiel verlassen.
-game.reached-goal=§aYay das ist das Ziel!
+game.running=&cDas Spiel läuft bereits.
+game.full=&cDas Spiel ist voll.
+game.countdown.absent=&cEs läuft kein Countdown.
+game.world.loading=&cDie Welt lädt noch.
+game.player.joined=&a➡%0 &7hat das Spiel betreten.
+game.player.left=&c⬅%0 &7hat das Spiel verlassen.
+game.reached-goal=&aYay das ist das Ziel!
+game.skipped.local=&aDu hast den Countdown übersprungen!
+game.skipped.failed=&cHier gibt es nichts zum Überspringen!
+game.skipped.global=&a%0 hat die Zeit verkürzt!
 
 difficulty.easy=Zu einfach bitch
 difficulty.intermediate=Bisl bessa

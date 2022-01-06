@@ -21,4 +21,9 @@ public class Systems {
 	public static final int MIN_PLAYERS = 2;
 
 	public static final int maxLobbyCount = 40;
+	
+	public static final int gameSeconds = 2*60;
+	
+	public static final String PVP_PRESET_NAME = "pvp_preset";
+	public static final String PVP_NAME = "pvp_name";
 }
