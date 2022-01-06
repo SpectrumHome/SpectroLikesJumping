@@ -7,6 +7,11 @@ cmd.create.use-number=&cEy benutz doch ne Zahl pls.
 cmd.create.cancel-registration=&4Registrierung abbrechen
 cmd.create.reset-registration=&cRegistrierung zurücksetzen
 
+cmd.delete.title=Löschen von %0
+cmd.delete.cancel=&cDu hast den Löschvorgang abgebrochen
+cmd.delete.error=&cDas Modul konnte nicht gelöscht werden
+cmd.delete.success=&7Das Modul &a%0 &7wurde gelöscht!
+
 cmd.setup.list=&7Locations= &a %0
 cmd.setup.all-set=&aDu hast schon alle Locations gesetzt uwu
 cmd.setup.missing-locs=&7Es fehlt noch= &a/setup <%0>
@@ -34,6 +39,7 @@ game.reached-goal=&aYay das ist das Ziel!
 game.skipped.local=&aDu hast den Countdown übersprungen!
 game.skipped.failed=&cHier gibt es nichts zum Überspringen!
 game.skipped.global=&a%0 hat die Zeit verkürzt!
+
 
 difficulty.easy=Zu einfach bitch
 difficulty.intermediate=Bisl bessa

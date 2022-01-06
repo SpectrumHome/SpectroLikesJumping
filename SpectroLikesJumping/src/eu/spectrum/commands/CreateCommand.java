@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.Vector;
 
+import eu.spectrum.guis.ModuleDeleteGui;
 import eu.spectrum.guis.ModuleRegisterGui;
 import eu.spectrum.main.Main;
 import eu.spectrum.main.Systems;
@@ -28,8 +29,9 @@ public class CreateCommand implements CommandExecutor {
 
 	public static final String setCommand = "/module set";
 	public static final String removeCommand = "/module reset";
-	
+
 	public static HashMap<Player, ModuleData> creationMode = new HashMap<Player, ModuleData>();
+	public static HashMap<Player, ModuleData> deleteMode = new HashMap<Player, ModuleData>();
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String name, String[] args) {
@@ -84,7 +86,6 @@ public class CreateCommand implements CommandExecutor {
 
 						if (args[0].startsWith("re")) {
 							if (currData.setField(args[1], null)) {
-								p.sendMessage("deleted");
 								step(p);
 								return false;
 							}
@@ -117,13 +118,11 @@ public class CreateCommand implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("delete")) {
 					if (args.length >= 2) {
 						String moduleName = assembleArg(1, args);
-						if (ModuleManager.delete(moduleName))
-							p.sendMessage(Main.PREFIX + Main.handler.format("module.delete.succeeded"));
-						else
-							p.sendMessage(Main.PREFIX + Main.handler.format("module.delete.failed"));
-
+						if (ModuleManager.isModule(moduleName)) {
+							new ModuleDeleteGui(p,ModuleManager.getModule(moduleName)).openInventory();
+						} else p.sendMessage(Main.PREFIX + Main.handler.format("module.absent"));
 					} else {
-						p.sendMessage(Main.PREFIX + Main.handler.format("name.missing"));
+						p.sendMessage(Main.PREFIX + Main.handler.format("module.name-missing"));
 					}
 				} else if (args[0].equalsIgnoreCase("list")) {
 					List<ModuleData> modules = ModuleManager.loadModules();
@@ -143,7 +142,8 @@ public class CreateCommand implements CommandExecutor {
 						if (page > pages - 1)
 							page = pages - 1;
 
-						p.sendMessage("§8§m---------§6[" + Main.handler.format("modules") + "]§8§m----------§r\n \n");
+						p.sendMessage(
+								"§8§m---------§6[" + Main.handler.format("modules") + "]§8§m----------§r\n \n");
 
 						for (int i = page * maxList; i < (page * maxList) + maxList; i++) {
 							if (i <= modules.size() - 1) {
@@ -169,9 +169,6 @@ public class CreateCommand implements CommandExecutor {
 										new BaseComponent[] { hoverDelete }));
 
 								base.addExtra(delete);
-								// TODO: delete comp, filler comp with two spaces, inventory with 1 column and
-								// wool to
-								// accept(hashmap,listener)
 
 								TextComponent edit = new TextComponent(" §7[§a§l✎§7]");
 								edit.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/module edit " + module.name));
@@ -220,8 +217,7 @@ public class CreateCommand implements CommandExecutor {
 					String modName = assembleArg(1, args);
 					if (ModuleManager.isModule(modName)) {
 						creationMode.put(p, ModuleManager.getModule(modName));
-						new ModuleRegisterGui(p, creationMode.get(p), true).openInventory();
-
+						new ModuleRegisterGui(p, true).openInventory();
 					} else {
 						p.sendMessage(Main.PREFIX + Main.handler.format("module.absent"));
 					}
@@ -246,7 +242,7 @@ public class CreateCommand implements CommandExecutor {
 		ModuleData data = creationMode.get(p);
 		if (data.getEnd() != null && data.getStart() != null && data.getLoc1() != null && data.getLoc2() != null) {
 			if (data.name == null) {
-				new ModuleRegisterGui(p, creationMode.get(p), false).openInventory();
+				new ModuleRegisterGui(p, false).openInventory();
 			} else {
 				ModuleManager.registerModule(p, data);
 				p.sendMessage(Main.PREFIX + Main.handler.format("construct.apply-changes"));

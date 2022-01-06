@@ -22,12 +22,10 @@ import eu.spigotui.utils.UISection;
 
 public class ModuleRegisterGui extends SpigotUI {
 
-	ModuleData data;
 	boolean change;
 
-	public ModuleRegisterGui(Player p, ModuleData data, boolean change) {
+	public ModuleRegisterGui(Player p, boolean change) {
 		super(p);
-		this.data = data;
 		this.change = change;
 	}
 
@@ -36,17 +34,17 @@ public class ModuleRegisterGui extends SpigotUI {
 		Player p = getPlayer();
 		ModuleData data = CreateCommand.creationMode.get(p);
 
-		ItemStack tickbox = ItemBuilder.skull("MHF_youtube").setName("Â§aÂ§l" + Main.handler.format("complete"))
+		ItemStack tickbox = ItemBuilder.skull("MHF_youtube").setName("§a§l" + Main.handler.format("complete"))
 				.build();
-		ItemStack arrow = ItemBuilder.skull("MHF_ArrowRight").setName("Â§cÂ§l" + Main.handler.format("difficulties"))
+		ItemStack arrow = ItemBuilder.skull("MHF_ArrowRight").setName("§c§l" + Main.handler.format("difficulties"))
 				.build();
-		ItemStack changeBuild = ItemBuilder.skull("MHF_cam").setName("Â§aÂ§l" + Main.handler.format("construct.change"))
+		ItemStack changeBuild = ItemBuilder.skull("MHF_cam").setName("§a§l" + Main.handler.format("construct.change"))
 				.build();
 
 		TextFieldInventory field = new TextFieldInventory(data.name == null ? Systems.defModuleName : data.name);
 		setActiveInventory(field);
 
-		addComponent(UISection.BOTTOM, new UIDisplayComponent(ItemBuilder.paneFiller(7, "Â§8-"), 9, 4));
+		addComponent(UISection.BOTTOM, new UIDisplayComponent(ItemBuilder.paneFiller(7, "§8-"), 9, 4));
 
 		addComponent(UISection.BOTTOM, new UIDisplayComponent(arrow).setPos(2, 1));
 		addComponent(UISection.BOTTOM, new UIButton(tickbox).setOnClick((action) -> {
@@ -63,7 +61,7 @@ public class ModuleRegisterGui extends SpigotUI {
 				data.setAbsoluteLocations(start);
 				CreateCommand.creationMode.put(p, data);
 				CreateCommand.step(p);
-			}).setPos(5, 3));
+			}).setPos(5, 3, 1));
 		}
 
 		int count = 0;
@@ -109,10 +107,10 @@ public class ModuleRegisterGui extends SpigotUI {
 				field.displayError(Main.handler.format("name.exists"));
 				return;
 			}
-			boolean editing = !originalName.equalsIgnoreCase(Systems.defModuleName);
-			if (editing || wasRenamed)
+			if (change || wasRenamed)
 				CreateCommand.creationMode.remove(field.getPlayer());
-			if (editing) {
+			
+			if (change) {
 				YamlConfiguration config = ModuleManager.getModuleConfig(originalName);
 				config.set("name", data.name);
 				config.set("difficulty", data.difficulty.toString());
