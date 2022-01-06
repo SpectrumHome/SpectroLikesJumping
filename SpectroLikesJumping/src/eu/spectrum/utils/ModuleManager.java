@@ -40,7 +40,7 @@ public class ModuleManager {
 
 	public static void saveSchematic(Player player, Location loc1, Location loc2, Location startLoc, String name) {
 		try {
-			File schematic = new File(moduleFolder(name) + "/construct.schematic");
+			File schematic = new File(moduleFolder(name,true) + "/construct.schematic");
 
 			WorldEditPlugin wep = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
 			LocalPlayer localPlayer = wep.wrapPlayer(player);
@@ -79,7 +79,7 @@ public class ModuleManager {
 	}
 
 	public static boolean delete(String name) {
-		File schematic = new File(moduleFolder(name));
+		File schematic = new File(moduleFolder(name,true));
 		if (schematic.exists()) {
 			try {
 				FileUtils.deleteDirectory(schematic);
@@ -91,22 +91,22 @@ public class ModuleManager {
 		return false;
 	}
 
-	public static String moduleFolder(String name) {
-		return Main.getInstance().getDataFolder() + "/modules/" + name;
+	public static String moduleFolder(String name,boolean base) {
+		return (base?Main.getInstance().getDataFolder():"")+"/modules/" + name;
 	}
 
 	public static ModuleData getModule(String name) {
-		ModuleData data = ModuleData.getFromFile(moduleFolder(name));
+		ModuleData data = ModuleData.getFromFile(moduleFolder(name,true));
 		return data;
 	}
 
 	public static boolean isModule(String name) {
-		return new File(moduleFolder(name)).exists();
+		return new File(moduleFolder(name,true)).exists();
 	}
 
 	public static void paste(Location loc, String name) {
 		WorldEditPlugin worldEditPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
-		File schematic = new File(moduleFolder(name) + "/construct.schematic");
+		File schematic = new File(moduleFolder(name,true) + "/construct.schematic");
 		EditSession session = worldEditPlugin.getWorldEdit().getEditSessionFactory()
 				.getEditSession(new BukkitWorld(loc.getWorld()), Integer.MAX_VALUE);
 		try {
@@ -118,7 +118,7 @@ public class ModuleManager {
 	}
 
 	public static CuboidClipboard getClipboard(String name) {
-		File schematic = new File(moduleFolder(name) + "/construct.schematic");
+		File schematic = new File(moduleFolder(name,true) + "/construct.schematic");
 		try {
 			CuboidClipboard clipboard = MCEditSchematicFormat.getFormat(schematic).load(schematic);
 			return clipboard;
@@ -134,7 +134,8 @@ public class ModuleManager {
 		Location min = data.getLoc1().getBlockY() <= data.getLoc2().getBlockY() ? data.loc1 : data.loc2;
 		Location max = data.getLoc1().getBlockY() > data.getLoc2().getBlockY() ? data.loc1 : data.loc2;
 
-		YamlConfiguration info = getModuleConfig(data.name);
+		Config config = getConfig(data.name);
+		YamlConfiguration info = config.yml;
 		info.set("name", data.name);
 		info.set("difficulty", data.difficulty.toString());
 
@@ -144,7 +145,7 @@ public class ModuleManager {
 
 		info.set("start", data.getStart().toVector().subtract(min.toVector()).toLocation(world, yaw, pitch));
 		info.set("end", data.getEnd().toVector().subtract(min.toVector()).toLocation(world, yaw, pitch));
-		saveModuleConfig(info, data.name);
+		config.saveConfig();
 
 		p.teleport(data.getStart());
 		ModuleManager.saveSchematic(p, min, max, data.getStart(), data.name);
@@ -162,8 +163,8 @@ public class ModuleManager {
 
 	public static boolean copyModule(String originModule, String newModule) {
 		try {
-			File oldFile = new File(ModuleManager.moduleFolder(originModule));
-			File newFile = new File(ModuleManager.moduleFolder(newModule));
+			File oldFile = new File(ModuleManager.moduleFolder(originModule,true));
+			File newFile = new File(ModuleManager.moduleFolder(newModule,true));
 			for (File f : oldFile.listFiles()) {
 				FileUtils.copyFileToDirectory(f, newFile);
 			}
@@ -174,27 +175,8 @@ public class ModuleManager {
 		return false;
 	}
 
-	public static boolean saveModuleConfig(YamlConfiguration config, String name) {
-		File infoFile = new File(moduleFolder(name) + "/info.yml");
-		try {
-			config.save(infoFile);
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	public static YamlConfiguration getModuleConfig(String name) {
-		File infoFile = new File(moduleFolder(name) + "/info.yml");
-		infoFile.getParentFile().mkdirs();
-		try {
-			infoFile.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		YamlConfiguration info = YamlConfiguration.loadConfiguration(infoFile);
-		return info;
+	public static Config getConfig(String module) {
+		return new Config(moduleFolder(module,false) + "/info.yml");
 	}
 
 	public static List<ModuleData> loadModules() {

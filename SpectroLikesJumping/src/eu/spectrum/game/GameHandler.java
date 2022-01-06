@@ -4,21 +4,22 @@ import static eu.spectrum.main.Systems.MIN_PLAYERS;
 import static eu.spectrum.main.Systems.maxLobbyCount;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import eu.spectrum.commands.SetupCommand;
 import eu.spectrum.main.Main;
 import eu.spectrum.main.Systems;
+import eu.spectrum.main.Systems.GameLocation;
 import eu.spectrum.utils.ModuleData;
 import eu.spectrum.utils.ModuleManager;
 import eu.spectrum.utils.TitleAPI;
@@ -45,7 +46,7 @@ public class GameHandler {
 		if (gameState == GameState.LOBBY) {
 			if (startCountdown)
 				stopCountdown(caller);
-			if (Main.getInstance().loadingWorld) {
+			if (Main.loadingWorld) {
 				caller.sendMessage(Main.PREFIX + Main.handler.format("game.world.loading"));
 				return;
 			}
@@ -58,6 +59,13 @@ public class GameHandler {
 			gameModules.clear();
 			gameModules = modules;
 
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				p.setGameMode(GameMode.SURVIVAL);
+				p.setHealth(20);
+				p.setFoodLevel(20);
+				p.setSaturation(20);
+			}
+
 			startIngameTimer();
 			generateModules();
 
@@ -67,29 +75,27 @@ public class GameHandler {
 	}
 
 	private static void startPVP() {
-		gameState = GameState.PVP;
 		try {
+
+			gameState = GameState.PVP;
 			Bukkit.unloadWorld(Systems.PVP_NAME, false);
 			File pvpMap = new File(Systems.PVP_NAME);
 			File pvpPreset = new File(Systems.PVP_PRESET_NAME);
 			if (pvpMap.isDirectory()) {
 				FileUtils.deleteDirectory(pvpMap);
 			}
-			if(!pvpPreset.isDirectory()) {
+			if (!pvpPreset.isDirectory()) {
 				System.err.println("PVP PRESET WAS NOT FOUND");
 				return;
 			}
 			FileUtils.copyDirectory(pvpPreset, pvpMap);
-			World world = new WorldCreator(Systems.PVP_NAME).createWorld();
-			
-			for(Player p : Bukkit.getOnlinePlayers()) {
-				p.teleport(world.getSpawnLocation());
-			}
-			
-			
-		} catch (IOException ex) {
+			new WorldCreator(Systems.PVP_NAME).createWorld();
+
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		SetupCommand.teleportAll(GameLocation.PVP);
+
 	}
 
 	/*
@@ -180,7 +186,7 @@ public class GameHandler {
 		int mins = (int) Math.floor(ingameTime / 60d);
 		String seconds = "" + ingameTime % 60;
 
-		return "§a" + mins + (seconds.length() > 1 ? ":" : ":0") + seconds;
+		return "a" + mins + (seconds.length() > 1 ? ":" : ":0") + seconds;
 	}
 
 	/*
@@ -195,7 +201,7 @@ public class GameHandler {
 		int count = 0;
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			Location loc = new Location(Main.getInstance().getWorld(), 0d, 100d, (totalSize.getZ() + 20) * count);
-			playerData.put(p, new PlayerData(loc));
+			playerData.get(p).start = loc;
 			spawnNextModule(p);
 			count++;
 		}

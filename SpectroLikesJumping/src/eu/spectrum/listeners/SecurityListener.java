@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -18,7 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
-import eu.spectrum.commands.CreateCommand;
+import eu.spectrum.commands.ModuleCommand;
 import eu.spectrum.game.GameHandler;
 import eu.spectrum.game.GameState;
 import eu.spectrum.main.Systems;
@@ -41,7 +42,11 @@ public class SecurityListener implements Listener {
 	public void onDamage(EntityDamageEvent e) {
 		if (e.getEntity() instanceof Player) {
 			Player p = (Player) e.getEntity();
+			if (GameHandler.playerData.containsKey(p) && GameHandler.playerData.get(p).spectator())
+				e.setCancelled(true);
 			if (p.getGameMode() == GameMode.SURVIVAL) {
+				if (GameHandler.playerData.containsKey(p) && GameHandler.playerData.get(p).spectator())
+					e.setCancelled(true);
 				actionForGameState(() -> e.setCancelled(true), true, GameState.PVP);
 			}
 		}
@@ -50,7 +55,9 @@ public class SecurityListener implements Listener {
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
-		if (CreateCommand.creationMode.containsKey(p) && e.getAction() == Action.PHYSICAL
+		if (GameHandler.playerData.containsKey(p) && GameHandler.playerData.get(p).spectator())
+			e.setCancelled(true);
+		if (ModuleCommand.creationMode.containsKey(p) && e.getAction() == Action.PHYSICAL
 				&& p.getLocation().getBlock().getType() == Systems.checkpoint[0]) {
 			e.setCancelled(true);
 		}
@@ -89,6 +96,15 @@ public class SecurityListener implements Listener {
 	public void onDrop(PlayerDropItemEvent e) {
 		if (e.getPlayer().getGameMode() == GameMode.SURVIVAL)
 			actionForGameState(() -> e.setCancelled(true), true, GameState.PVP);
+	}
+	
+	@EventHandler
+	public void onDamage(EntityDamageByEntityEvent e) {
+		if (e.getDamager() instanceof Player) {
+			Player p = (Player) e.getDamager();
+			if (GameHandler.playerData.containsKey(p) && GameHandler.playerData.get(p).spectator())
+				e.setCancelled(true);
+		}
 	}
 
 	public static void actionForGameState(Runnable action, boolean invert, GameState... states) {

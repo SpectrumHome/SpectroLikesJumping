@@ -16,6 +16,10 @@ cmd.setup.list=&7Locations= &a %0
 cmd.setup.all-set=&aDu hast schon alle Locations gesetzt uwu
 cmd.setup.missing-locs=&7Es fehlt noch= &a/setup <%0>
 cmd.setup.set-loc=&7Du hast &a%0 &7gesetzt.
+cmd.setup.reset=&7Du hast &c%0 &7zurückgesetzt.
+cmd.setup.already-set=&cDiese Location wurde schon gesetzt.
+cmd.setup.add-loc=&7Du hast &a%0 &7hinzugefügt.
+cmd.setup.missing=&cDiese Location wurde noch nicht gesetzt.
 
 module.add=&aFüge ein Modul mit \"/module add\" hinzu!
 module.absent=&cDieses Modul existiert nicht!

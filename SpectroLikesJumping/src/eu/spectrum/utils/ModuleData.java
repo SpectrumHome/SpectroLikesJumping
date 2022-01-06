@@ -16,7 +16,7 @@ import org.bukkit.util.Vector;
 
 import com.sk89q.worldedit.CuboidClipboard;
 
-import eu.spectrum.commands.CreateCommand;
+import eu.spectrum.commands.ModuleCommand;
 import eu.spectrum.main.Main;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -217,8 +217,8 @@ public class ModuleData {
 				TextComponent fieldSection = new TextComponent((isNull ? "§2§l[x]" : "§a§l[✓]") + " §r§7" + field.name
 						+ " wurde " + (isNull ? "nicht" : "") + " gesetzt");
 				fieldSection.setClickEvent(new ClickEvent(Action.RUN_COMMAND,
-						isNull ? (CreateCommand.setCommand + " " + field.field.getName())
-								: (CreateCommand.removeCommand + " " + field.field.getName())));
+						isNull ? (ModuleCommand.setCommand + " " + field.field.getName())
+								: (ModuleCommand.removeCommand + " " + field.field.getName())));
 				TextComponent fieldHover = new TextComponent(
 						(isNull ? "§a" : "§c") + field.name + " " + (isNull ? Main.handler.format("set") : Main.handler.format("delete")));
 				fieldSection

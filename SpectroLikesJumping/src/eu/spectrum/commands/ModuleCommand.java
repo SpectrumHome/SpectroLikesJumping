@@ -25,7 +25,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 @SuppressWarnings("deprecation")
-public class CreateCommand implements CommandExecutor {
+public class ModuleCommand implements CommandExecutor {
 
 	public static final String setCommand = "/module set";
 	public static final String removeCommand = "/module reset";

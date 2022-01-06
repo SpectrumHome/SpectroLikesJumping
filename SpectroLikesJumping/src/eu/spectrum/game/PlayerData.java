@@ -11,10 +11,17 @@ import eu.spectrum.utils.ModuleData;
 public class PlayerData {
 	
 	public int currentModule;
-	Location start;
+	public Location start;
 	Location end;
 	public int minHeight;
 	public int lifes;
+	
+	JumpTeam team = JumpTeam.BACKFISCHE;
+	
+	public PlayerData() {
+		currentModule = -1;
+		lifes = Systems.MAX_LIFES;
+	}
 
 	public PlayerData(Location start) {
 		currentModule = -1;
@@ -25,6 +32,10 @@ public class PlayerData {
 	public void setStart(Location start) {
 		this.start = start;
 		calcEnd();
+	}
+	
+	public JumpTeam getTeam() {
+		return team;
 	}
 	
 	public Location getStart() {
@@ -45,7 +56,7 @@ public class PlayerData {
 	}
 	
 	public boolean playerDied() {
-		if(lifes > 1) {
+		if(lifes >= 1) {
 			lifes--;
 		}
 		if(lifes <= 0)
@@ -55,6 +66,10 @@ public class PlayerData {
 	
 	public boolean lives() {
 		return lifes > 0;
+	}
+	
+	public boolean spectator() {
+		return !lives();
 	}
 	
 	@SuppressWarnings("deprecation")
