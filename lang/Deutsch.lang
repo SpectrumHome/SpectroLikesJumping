@@ -49,10 +49,8 @@ game.reached-goal=&aYay das ist das Ziel!
 game.skipped.local=&aDu hast den Countdown übersprungen!
 game.skipped.failed=&cHier gibt es nichts zum Überspringen!
 game.skipped.global=&a%0 hat die Zeit verkürzt!
-
 loot.edit=LootTable %0 bearbeiten
 loot.entry.edit=Eintrag bearbeiten
-
 
 difficulty.easy=Zu einfach bitch
 difficulty.intermediate=Bisl bessa

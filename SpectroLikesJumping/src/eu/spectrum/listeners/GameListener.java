@@ -30,6 +30,8 @@ import eu.spectrum.main.Main;
 import eu.spectrum.main.Systems;
 import eu.spectrum.main.Systems.GameLocation;
 
+import static eu.spectrum.game.GameHandler.*;
+
 public class GameListener implements Listener {
 
 	@EventHandler

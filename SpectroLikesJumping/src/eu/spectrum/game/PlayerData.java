@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.Vector;
-
 import eu.realms.common.display.ScoreboardAPI.ScoreTeam;
 import eu.realms.common.display.ScoreboardAPI.SidebarScoreboard;
 import eu.realms.common.display.TitleAPI;
