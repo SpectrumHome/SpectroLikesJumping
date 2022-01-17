@@ -7,7 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import eu.spectrum.game.GameHandler;
-import eu.spectrum.game.GameState;
+import eu.spectrum.game.states.IngameState;
+import eu.spectrum.game.EnumGameState;
 import eu.spectrum.main.Main;
 
 public class SkipCommand implements CommandExecutor {
@@ -17,8 +18,8 @@ public class SkipCommand implements CommandExecutor {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			if (p.isOp()) {
-				if (GameHandler.gameState == GameState.INGAME && GameHandler.ingameTime > 10) {
-					GameHandler.ingameTime = 10;
+				if (GameHandler.gameState == EnumGameState.INGAME && IngameState.getIngameTime() > 10) {
+					IngameState.setIngameTime(10);
 					p.sendMessage(Main.PREFIX + Main.handler.format("game.skipped.local"));
 					for (Player on : Bukkit.getOnlinePlayers())
 						if (on != p)

@@ -14,3 +14,6 @@ commands:
       description: Starts the game.
    skip:
       description: Skips the ingame timer
+   loottable:
+      description: Create and Edit Loottables
+      aliases: lt

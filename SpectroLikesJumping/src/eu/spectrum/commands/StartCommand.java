@@ -5,7 +5,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import eu.spectrum.game.EnumGameState;
 import eu.spectrum.game.GameHandler;
+import eu.spectrum.game.states.LobbyState;
+import eu.spectrum.main.Main;
 
 public class StartCommand implements CommandExecutor {
 
@@ -14,12 +17,14 @@ public class StartCommand implements CommandExecutor {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			if (args.length >= 1 && args[0].equalsIgnoreCase("now")) {
-				GameHandler.startGame(p);
+				if (GameHandler.gameState == EnumGameState.LOBBY) {
+					GameHandler.changeGameState(EnumGameState.INGAME, p);
+				} else p.sendMessage(Main.PREFIX + Main.handler.format("game.running"));
 			} else {
-				if (GameHandler.startCountdown) {
-					GameHandler.startGame(p);
+				if (LobbyState.startCountdown) {
+					GameHandler.changeGameState(EnumGameState.INGAME, p);
 				} else {
-					GameHandler.startCountdown(p);
+					LobbyState.startCountdown(p);
 				}
 			}
 		}

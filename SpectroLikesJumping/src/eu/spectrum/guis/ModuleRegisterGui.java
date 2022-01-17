@@ -7,7 +7,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import eu.spectrum.commands.CreateCommand;
+import eu.realms.common.io.Config;
+import eu.spectrum.commands.ModuleCommand;
 import eu.spectrum.main.Main;
 import eu.spectrum.main.Systems;
 import eu.spectrum.utils.Difficulty;
@@ -32,19 +33,19 @@ public class ModuleRegisterGui extends SpigotUI {
 	@Override
 	public void initComponents() {
 		Player p = getPlayer();
-		ModuleData data = CreateCommand.creationMode.get(p);
+		ModuleData data = ModuleCommand.creationMode.get(p);
 
-		ItemStack tickbox = ItemBuilder.skull("MHF_youtube").setName("§a§l" + Main.handler.format("complete"))
+		ItemStack tickbox = ItemBuilder.skull("MHF_youtube").setName("ï¿½aï¿½l" + Main.handler.format("complete"))
 				.build();
-		ItemStack arrow = ItemBuilder.skull("MHF_ArrowRight").setName("§c§l" + Main.handler.format("difficulties"))
+		ItemStack arrow = ItemBuilder.skull("MHF_ArrowRight").setName("ï¿½cï¿½l" + Main.handler.format("difficulties"))
 				.build();
-		ItemStack changeBuild = ItemBuilder.skull("MHF_cam").setName("§a§l" + Main.handler.format("construct.change"))
+		ItemStack changeBuild = ItemBuilder.skull("MHF_cam").setName("ï¿½aï¿½l" + Main.handler.format("construct.change"))
 				.build();
 
 		TextFieldInventory field = new TextFieldInventory(data.name == null ? Systems.defModuleName : data.name);
 		setActiveInventory(field);
 
-		addComponent(UISection.BOTTOM, new UIDisplayComponent(ItemBuilder.paneFiller(7, "§8-"), 9, 4));
+		addComponent(UISection.BOTTOM, new UIDisplayComponent(ItemBuilder.paneFiller(7, "ï¿½8-"), 9, 4));
 
 		addComponent(UISection.BOTTOM, new UIDisplayComponent(arrow).setPos(2, 1));
 		addComponent(UISection.BOTTOM, new UIButton(tickbox).setOnClick((action) -> {
@@ -59,8 +60,8 @@ public class ModuleRegisterGui extends SpigotUI {
 				ModuleManager.paste(start, data.name);
 				data.resetCheckpoints();
 				data.setAbsoluteLocations(start);
-				CreateCommand.creationMode.put(p, data);
-				CreateCommand.step(p);
+				ModuleCommand.creationMode.put(p, data);
+				ModuleCommand.step(p);
 			}).setPos(5, 3, 1));
 		}
 
@@ -108,14 +109,15 @@ public class ModuleRegisterGui extends SpigotUI {
 				return;
 			}
 			if (change || wasRenamed)
-				CreateCommand.creationMode.remove(field.getPlayer());
+				ModuleCommand.creationMode.remove(field.getPlayer());
 			
 			if (change) {
-				YamlConfiguration config = ModuleManager.getModuleConfig(originalName);
+				Config configData = ModuleManager.getConfig(originalName);
+				YamlConfiguration config = configData.yml;
 				config.set("name", data.name);
 				config.set("difficulty", data.difficulty.toString());
-				ModuleManager.saveModuleConfig(config, originalName);
-
+				configData.saveConfig();
+				
 				if (wasRenamed) {
 					ModuleManager.copyModule(originalName, data.name);
 					ModuleManager.delete(originalName);
@@ -138,8 +140,8 @@ public class ModuleRegisterGui extends SpigotUI {
 	}
 
 	public void quitCreation(Player p) {
-		if (CreateCommand.creationMode.containsKey(p)) {
-			CreateCommand.creationMode.remove(p);
+		if (ModuleCommand.creationMode.containsKey(p)) {
+			ModuleCommand.creationMode.remove(p);
 			p.sendMessage(Main.handler.format("module.registration.canceled"));
 		} else {
 			p.sendMessage(Main.handler.format("module.registration.suceeded"));
