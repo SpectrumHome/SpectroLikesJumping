@@ -16,6 +16,16 @@ cmd.setup.list=&7Locations= &a %0
 cmd.setup.all-set=&aDu hast schon alle Locations gesetzt uwu
 cmd.setup.missing-locs=&7Es fehlt noch= &a/setup <%0>
 cmd.setup.set-loc=&7Du hast &a%0 &7gesetzt.
+cmd.setup.reset=&7Du hast &c%0 &7zurückgesetzt.
+cmd.setup.already-set=&cDiese Location wurde schon gesetzt.
+cmd.setup.add-loc=&7Du hast &a%0 &7hinzugefügt.
+cmd.setup.missing=&cDiese Location wurde noch nicht gesetzt.
+
+pvp.alive=§aQuick lebendig
+pvp.half-alive=§6Nagt am Tuch
+pvp.half-dead=§cAm ableben
+
+team.apply=§fist nun dein Team
 
 module.add=&aFüge ein Modul mit \"/module add\" hinzu!
 module.absent=&cDieses Modul existiert nicht!
@@ -36,6 +46,13 @@ game.world.loading=&cDie Welt lädt noch.
 game.player.joined=&a➡%0 &7hat das Spiel betreten.
 game.player.left=&c⬅%0 &7hat das Spiel verlassen.
 game.reached-goal=&aYay das ist das Ziel!
+game.skipped.local=&aDu hast den Countdown übersprungen!
+game.skipped.failed=&cHier gibt es nichts zum Überspringen!
+game.skipped.global=&a%0 hat die Zeit verkürzt!
+
+loot.edit=LootTable %0 bearbeiten
+loot.entry.edit=Eintrag bearbeiten
+
 
 difficulty.easy=Zu einfach bitch
 difficulty.intermediate=Bisl bessa

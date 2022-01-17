@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
@@ -9,6 +9,6 @@
 	<classpathentry kind="lib" path="libs/Language_API.jar"/>
 	<classpathentry kind="lib" path="libs/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar"/>
 	<classpathentry kind="lib" path="libs/worldedit-bukkit-6.1.7.3.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SpigotUI"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MCRealmsCore"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

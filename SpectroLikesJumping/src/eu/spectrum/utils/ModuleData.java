@@ -1,8 +1,5 @@
 package eu.spectrum.utils;
 
-import static eu.spectrum.utils.VectorUtils.toLocation;
-import static eu.spectrum.utils.VectorUtils.toVector;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -16,7 +13,10 @@ import org.bukkit.util.Vector;
 
 import com.sk89q.worldedit.CuboidClipboard;
 
-import eu.spectrum.commands.CreateCommand;
+import static eu.realms.common.vector.VectorUtils.*;
+import eu.realms.common.vector.VectorUtils;
+import eu.realms.common.vector.WorldBox;
+import eu.spectrum.commands.ModuleCommand;
 import eu.spectrum.main.Main;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -69,7 +69,7 @@ public class ModuleData {
 
 	public void remove(Location absoluteStart) {
 		WorldBox box = getWorldBox(absoluteStart);
-		VectorUtils.fillWith(box.getMin(), box.getMax(), Material.AIR);
+		fillWith(box.getMin(), box.getMax(), Material.AIR);
 	}
 
 	@Override
@@ -217,8 +217,8 @@ public class ModuleData {
 				TextComponent fieldSection = new TextComponent((isNull ? "§2§l[x]" : "§a§l[✓]") + " §r§7" + field.name
 						+ " wurde " + (isNull ? "nicht" : "") + " gesetzt");
 				fieldSection.setClickEvent(new ClickEvent(Action.RUN_COMMAND,
-						isNull ? (CreateCommand.setCommand + " " + field.field.getName())
-								: (CreateCommand.removeCommand + " " + field.field.getName())));
+						isNull ? (ModuleCommand.setCommand + " " + field.field.getName())
+								: (ModuleCommand.removeCommand + " " + field.field.getName())));
 				TextComponent fieldHover = new TextComponent(
 						(isNull ? "§a" : "§c") + field.name + " " + (isNull ? Main.handler.format("set") : Main.handler.format("delete")));
 				fieldSection
